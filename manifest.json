@@ -6,7 +6,7 @@
     { 
       "id": "showbox",
       "name": "ShowBox",
-      "description": "ShowBox streaming with multiple quality options and versions",
+      "description": "ShowBox streaming with the best quality and up to 4K",
       "version": "1.0.0",
       "author": "Nuvio Team",
       "supportedTypes": [
@@ -27,7 +27,7 @@
     {
       "id": "vidlink",
       "name": "Vidlink",
-      "description": "Vidlink streaming with encrypted TMDB ID support for movies and TV shows",
+      "description": "Vidlink streaming with fast load times and good quality",
       "version": "1.0.0",
       "author": "Nuvio Team",
       "supportedTypes": [
@@ -48,7 +48,7 @@
     {
       "id": "animekai",
       "name": "AnimeKai",
-      "description": "AnimeKai TV episodes via AnimeKai servers",
+      "description": "AnimeKai streaming for anime via AnimeKai servers",
       "version": "1.1.0",
       "author": "Nuvio Team",
       "supportedTypes": [
