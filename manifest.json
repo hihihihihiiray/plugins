@@ -9,7 +9,7 @@
       "version": "1.0.0",
       "author": "Nuvio Team",
       "supportedTypes": [
-        "movies",
+        "movie",
         "tv",
         "anime"
       ],
@@ -31,7 +31,7 @@
       "version": "1.0.0",
       "author": "Nuvio Team",
       "supportedTypes": [
-        "movies",
+        "movie",
         "tv"
       ],
       "filename": "providers/vidlink.js",
@@ -53,7 +53,7 @@
       "author": "Nuvio Team",
       "supportedTypes": [
         "anime",
-        "movies",
+        "movie",
         "tv"
       ],
       "filename": "providers/animekai.js",
