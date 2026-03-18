@@ -52,9 +52,9 @@
       "version": "1.1.0",
       "author": "Nuvio Team",
       "supportedTypes": [
-        "anime",
-        "movie",
-        "tv"
+       "movie",
+       "tv",
+       "anime"
       ],
       "filename": "providers/animekai.js",
       "enabled": true,
