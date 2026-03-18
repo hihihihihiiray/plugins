@@ -1,5 +1,5 @@
 {
-  "name": "Ray's Plugins",
+  "name": "The Best Plugins",
   "version": "1.0.0",
   "scrapers": [
     { 
@@ -10,7 +10,8 @@
       "author": "Nuvio Team",
       "supportedTypes": [
         "movie",
-        "tv"
+        "tv",
+        "anime"
       ],
       "filename": "providers/showbox.js",
       "enabled": true,
