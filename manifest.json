@@ -4,8 +4,8 @@
   "scrapers": [
     { 
       "id": "showbox",
-      "name": "ShowBox",
-      "description": "ShowBox streaming with multiple quality options and versions up to 4K",
+      "name": "FED API",
+      "description": "FED API streaming with multiple quality options and versions up to 4K",
       "version": "1.0",
       "author": "Nuvio Team",
       "supportedTypes": [
@@ -19,7 +19,7 @@
         "mp4",
         "mkv"
       ],
-      "logo": "https://files.catbox.moe/4mdxz9.jpeg",
+      "logo": "https://www.febbox.com/static/index_img/logo_icon.png",
       "contentLanguage": [
         "en"
       ]
