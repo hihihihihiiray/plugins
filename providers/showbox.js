@@ -165,16 +165,10 @@ function processShowBoxResponse(data, mediaInfo, mediaType, seasonNum, episodeNu
 
         console.log(`[ShowBox] Processing ${data.versions.length} version(s)`);
 
-        // Build title with year and episode info if TV
+        // Build title with episode info if TV
         let streamTitle = mediaInfo.title || 'Unknown Title';
-        if (mediaInfo.year) {
-            streamTitle += ` (${mediaInfo.year})`;
-        }
         if (mediaType === 'tv' && seasonNum && episodeNum) {
             streamTitle = `${mediaInfo.title || 'Unknown'} S${String(seasonNum).padStart(2, '0')}E${String(episodeNum).padStart(2, '0')}`;
-            if (mediaInfo.year) {
-                streamTitle += ` (${mediaInfo.year})`;
-            }
         }
 
         // Process each version
