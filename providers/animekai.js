@@ -411,7 +411,7 @@ function formatToNuvioStreams(formattedData, mediaTitle) {
     var typeMap = {
         'sub': 'Hard Sub',
         'softsub': 'Soft Sub',
-        'dub': 'Dub & S-Sub'
+        'dub': 'Dub'
     };
 
     // Deduplicate by URL
@@ -429,7 +429,7 @@ function formatToNuvioStreams(formattedData, mediaTitle) {
         var serverLabel = s.serverName || 'Server';
         
         // Name format: ⌜ AnimeKai ⌟ | Server 1 | [Soft Sub] - 1080p
-        var displayName = '⌜ AnimeKai ⌟ | ' + serverLabel + ' | [' + typeLabel + '] - ' + quality;
+        var displayName = ' AnimeKai ' | ' + serverLabel + ' | [' + typeLabel + '] - ' + quality;
 
         links.push({
             name: displayName,
