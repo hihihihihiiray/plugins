@@ -13,7 +13,7 @@
         "tv",
         "anime"
       ],
-      "filename": "providers/Showbox.js",
+      "filename": "providers/showbox.js",
       "enabled": true,
       "formats": [
         "mp4",
