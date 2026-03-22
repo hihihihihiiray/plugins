@@ -7,11 +7,11 @@ const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 
 // ShowBox API Configuration
 const SHOWBOX_API_BASE = 'https://febapi.nuvioapp.space/api/media';
-const OSS_REGION = 'USA5'; // Change this to swap regions (e.g. 'USA7', 'UK1')
+const OSS_REGION = 'USA6'; // Change this to swap regions (e.g. 'USA7', 'UK1')
 
 // Working headers for ShowBox API
 const WORKING_HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36',
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.3 Safari/605.1.15',
     'Accept': 'application/json',
     'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8',
     'Accept-Encoding': 'gzip, deflate, br, zstd',
