@@ -16,36 +16,28 @@ const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 const SERVERS = {
   'Neon': {
     url: 'https://api.videasy.net/myflixerzupcloud/sources-with-title',
-    language: 'Original'
   },
   'Sage': {
     url: 'https://api.videasy.net/1movies/sources-with-title',
-    language: 'Original'
   },
   'Cypher': {
     url: 'https://api.videasy.net/moviebox/sources-with-title',
-    language: 'Original'
   },
   'Yoru': {
     url: 'https://api.videasy.net/cdn/sources-with-title',
-    language: 'Original',
     moviesOnly: true
   },
   'Reyna': {
     url: 'https://api2.videasy.net/primewire/sources-with-title',
-    language: 'Original'
   },
   'Omen': {
     url: 'https://api.videasy.net/onionplay/sources-with-title',
-    language: 'Original'
   },
   'Breach': {
     url: 'https://api.videasy.net/m4uhd/sources-with-title',
-    language: 'Original'
   },
   'Vyse': {
     url: 'https://api.videasy.net/hdmovie/sources-with-title',
-    language: 'Original'
   }
 };
 
