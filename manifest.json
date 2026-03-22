@@ -45,6 +45,54 @@
       ]
     },
     {
+      "id": "uhdmovies",
+      "name": "UHDMovies",
+      "description": "UHD Movies streaming with multiple resolutions",
+      "version": "1.2",
+      "author": "Nuvio Team",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/uhdmovies.js",
+      "enabled": true,
+      "formats": [
+        "mkv"
+      ],
+      "logo": "https://uhdmovies.rip/wp-content/uploads/2021/03/cropped-output-onlinepngtools-1-32x32.png",
+      "contentLanguage": [
+        "en"
+      ]
+    },
+    {
+      "id": "videasy",
+      "name": "VidEasy",
+      "description": "VideoEasy streaming with multiple server support and languages",
+      "version": "1.0",
+      "author": "Nuvio Team",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/videasy.js",
+      "enabled": true,
+      "formats": [
+        "m3u8",
+        "mp4",
+        "mkv"
+      ],
+      "logo": "https://www.videasy.net/logo.png",
+      "contentLanguage": [
+        "en",
+        "de",
+        "it",
+        "fr",
+        "hi",
+        "es",
+        "pt"
+      ]
+    },
+    {
       "id": "vidlink",
       "name": "VidLink",
       "description": "Vidlink streaming with fast load times and good quality",
