@@ -7,6 +7,7 @@ const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 
 // ShowBox API Configuration
 const SHOWBOX_API_BASE = 'https://febapi.nuvioapp.space/api/media';
+const OSS_REGION = 'USA5'; // Change this to swap regions (e.g. 'USA5', 'IN1')
 
 // Working headers for ShowBox API
 const WORKING_HEADERS = {
@@ -33,21 +34,9 @@ function getUiToken() {
     return '';
 }
 
-// Region preference (OSS group) is provided by the host app via per-scraper settings (Plugin Screen)
-// Defaults to 'USA7' if not configured — other valid values include e.g. 'USA5', 'IN1'
+// OSS region — set OSS_REGION above to change it
 function getOssGroup() {
-    try {
-        // Prefer sandbox-injected globals
-        if (typeof global !== 'undefined' && global.SCRAPER_SETTINGS && global.SCRAPER_SETTINGS.ossGroup) {
-            return String(global.SCRAPER_SETTINGS.ossGroup);
-        }
-        if (typeof window !== 'undefined' && window.SCRAPER_SETTINGS && window.SCRAPER_SETTINGS.ossGroup) {
-            return String(window.SCRAPER_SETTINGS.ossGroup);
-        }
-    } catch (e) {
-        // ignore and fall through
-    }
-    return 'USA7'; // Default region — matches shoebox.js behaviour
+    return OSS_REGION;
 }
 
 // Utility Functions
@@ -226,9 +215,9 @@ function getStreams(tmdbId, mediaType = 'movie', seasonNum = null, episodeNum = 
         return Promise.resolve([]);
     }
 
-    // Get OSS region — always present, defaults to 'USA7'
+    // Get OSS group - optional
     const ossGroup = getOssGroup();
-    console.log(`[ShowBox] Using cookie: ${cookie.substring(0, 20)}..., OSS Region: ${ossGroup}`);
+    console.log(`[ShowBox] Using cookie: ${cookie.substring(0, 20)}...${ossGroup ? `, OSS Group: ${ossGroup}` : ' (no OSS group)'}`);
 
     // Get TMDB details for title formatting
     return getTMDBDetails(tmdbId, mediaType)
@@ -236,14 +225,17 @@ function getStreams(tmdbId, mediaType = 'movie', seasonNum = null, episodeNum = 
             console.log(`[ShowBox] TMDB Info: "${mediaInfo.title}" (${mediaInfo.year || 'N/A'})`);
 
             // Build API URL based on media type
-            // oss= (region) is always included — defaults to 'USA7', configurable via scraper settings
             let apiUrl;
             if (mediaType === 'tv' && seasonNum && episodeNum) {
-                // TV format: /api/media/tv/:tmdbId/oss=:region/:season/:episode?cookie=:cookie
-                apiUrl = `${SHOWBOX_API_BASE}/tv/${tmdbId}/oss=${ossGroup}/${seasonNum}/${episodeNum}?cookie=${encodeURIComponent(cookie)}`;
+                // TV format: /api/media/tv/:tmdbId/oss=:ossGroup/:season/:episode?cookie=:cookie
+                if (ossGroup) {
+                    apiUrl = `${SHOWBOX_API_BASE}/tv/${tmdbId}/oss=${ossGroup}/${seasonNum}/${episodeNum}?cookie=${encodeURIComponent(cookie)}`;
+                } else {
+                    apiUrl = `${SHOWBOX_API_BASE}/tv/${tmdbId}/${seasonNum}/${episodeNum}?cookie=${encodeURIComponent(cookie)}`;
+                }
             } else {
-                // Movie format: /api/media/movie/:tmdbId/oss=:region?cookie=:cookie
-                apiUrl = `${SHOWBOX_API_BASE}/movie/${tmdbId}/oss=${ossGroup}?cookie=${encodeURIComponent(cookie)}`;
+                // Movie format: /api/media/movie/:tmdbId?cookie=:cookie
+                apiUrl = `${SHOWBOX_API_BASE}/movie/${tmdbId}?cookie=${encodeURIComponent(cookie)}`;
             }
 
             console.log(`[ShowBox] Requesting: ${apiUrl}`);
