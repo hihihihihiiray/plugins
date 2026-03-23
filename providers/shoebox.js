@@ -46,7 +46,7 @@ function getOssGroup() {
     } catch (e) {
         // ignore and fall through
     }
-    return null; // OSS group is optional
+    return ''; // OSS group is optional
 }
 
 // Utility Functions
