@@ -105,9 +105,6 @@ function extractCodecDetails(text) {
     else if (lowerText.includes('hdr')) details.add('HDR');
     if (lowerText.includes('sdr')) details.add('SDR');
 
-    if (lowerText.includes('av1')) details.add('AV1');
-    else if (lowerText.includes('h265') || lowerText.includes('x265') || lowerText.includes('hevc')) details.add('H.265');
-    else if (lowerText.includes('h264') || lowerText.includes('x264') || lowerText.includes('avc')) details.add('H.264');
 
     // Audio Codecs
     if (lowerText.includes('atmos')) details.add('Atmos');
@@ -121,11 +118,6 @@ function extractCodecDetails(text) {
 
     if (lowerText.includes('aac')) details.add('AAC');
     if (lowerText.includes('opus')) details.add('Opus');
-    if (lowerText.includes('mp3')) details.add('MP3');
-
-    // Bit depth
-    if (lowerText.includes('10bit') || lowerText.includes('10-bit')) details.add('10-bit');
-    else if (lowerText.includes('8bit') || lowerText.includes('8-bit')) details.add('8-bit');
 
     return Array.from(details);
 }
