@@ -92,37 +92,6 @@ function formatFileSize(sizeStr) {
     return sizeStr;
 }
 
-// Detect media source/format tags (e.g. BluRay REMUX, WEB-DL) from a version name string
-function extractSourceDetails(text) {
-    if (!text || typeof text !== 'string') return [];
-    const tags = [];
-    const lowerText = text.toLowerCase();
-
-    // BluRay variants — check REMUX first so it takes priority over plain BluRay
-    const isBluRay = lowerText.includes('bluray') || lowerText.includes('blu-ray') || lowerText.includes('bdrip') || lowerText.includes('bd');
-    const isRemux = lowerText.includes('remux');
-
-    if (isBluRay && isRemux) {
-        tags.push('BluRay REMUX');
-    } else if (isRemux) {
-        tags.push('REMUX');
-    } else if (isBluRay) {
-        tags.push('BluRay');
-    }
-
-    // Web sources
-    if (lowerText.includes('web-dl') || lowerText.includes('webdl')) tags.push('WEB-DL');
-    else if (lowerText.includes('webrip') || lowerText.includes('web-rip')) tags.push('WEBRip');
-
-    // Other sources
-    if (lowerText.includes('hdtv')) tags.push('HDTV');
-    if (lowerText.includes('dvdrip') || lowerText.includes('dvd-rip')) tags.push('DVDRip');
-    if (lowerText.includes('hdrip') || lowerText.includes('hd-rip')) tags.push('HDRip');
-    if (lowerText.includes('camrip') || lowerText.includes('cam-rip') || lowerText.includes('hdcam')) tags.push('CAM');
-
-    return tags;
-}
-
 // Extract video and audio codec details from a filename or text string
 function extractCodecDetails(text) {
     if (!text || typeof text !== 'string') return [];
@@ -233,8 +202,7 @@ function processShowBoxResponse(data, mediaInfo, mediaType, seasonNum, episodeNu
             const versionName = version.name || `Version ${versionIndex + 1}`;
             const versionSize = version.size || 'Unknown';
 
-            // Extract source tags (BluRay REMUX, WEB-DL, etc.) and codec details from the version name
-            const sourceTags = extractSourceDetails(versionName);
+            // Extract codec details from the version name
             const codecs = extractCodecDetails(versionName);
             const codecLine = codecs.length > 0 ? codecs.join(' • ') : null;
 
@@ -246,17 +214,16 @@ function processShowBoxResponse(data, mediaInfo, mediaType, seasonNum, episodeNu
                     const normalizedQuality = getQualityFromName(link.quality || 'Unknown');
                     const linkSize = link.size || versionSize;
 
-                    // Stream name: ShowBox - 1080p (with optional version number)
+                    // Stream name stays as just "ShowBox" (with optional version number)
                     let streamName = 'ShowBox';
                     if (data.versions.length > 1) {
                         streamName += ` V${versionIndex + 1}`;
                     }
                     streamName += ` - ${normalizedQuality}`;
 
-                    // Title line 1: "The Dark Knight 1080p BluRay REMUX"
+                    // Title line 1: "The Dark Knight 1080p" or "Show S01E01 1080p"
                     // Title line 2 (if codecs found): "H.265 • Atmos • 10-bit"
-                    const sourcePart = sourceTags.length > 0 ? ` ${sourceTags.join(' ')}` : '';
-                    const titleWithQuality = `${baseTitle} ${normalizedQuality}${sourcePart}`;
+                    const titleWithQuality = `${baseTitle} ${normalizedQuality}`;
                     const fullTitle = codecLine
                         ? `${titleWithQuality}\n${codecLine}`
                         : titleWithQuality;
