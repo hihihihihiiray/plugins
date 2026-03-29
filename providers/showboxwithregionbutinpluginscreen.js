@@ -6,8 +6,7 @@ const TMDB_API_KEY = '1c29a5198ee1854bd5eb45dbe8d17d92';
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 
 // ShowBox API Configuration
-const SHOWBOX_API_BASE = 'https://febapi.nuvioapp.space/api/media';
-const SHOWBOX_SERVER_REGION = 'USA5'; // Change this to swap regions (e.g. 'USA7', 'UK1')
+const SHOWBOX_API_BASE = 'https://febapi.nuvioapp.space/api/media'; = 'USA5'; // Change this to swap regions (e.g. 'USA7', 'UK1')
 
 // Working headers for ShowBox API
 const WORKING_HEADERS = {
@@ -34,8 +33,20 @@ function getUiToken() {
     return '';
 }
 
+// OSS Group is provided by the host app via per-scraper settings (Plugin Screen) - optional
 function getOssGroup() {
-    return SHOWBOX_SERVER_REGION;
+    try {
+        // Prefer sandbox-injected globals
+        if (typeof global !== 'undefined' && global.SCRAPER_SETTINGS && global.SCRAPER_SETTINGS.ossGroup) {
+            return String(global.SCRAPER_SETTINGS.ossGroup);
+        }
+        if (typeof window !== 'undefined' && window.SCRAPER_SETTINGS && window.SCRAPER_SETTINGS.ossGroup) {
+            return String(window.SCRAPER_SETTINGS.ossGroup);
+        }
+    } catch (e) {
+        // ignore and fall through
+    }
+    return ''; // OSS group is optional
 }
 
 // Utility Functions
