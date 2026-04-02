@@ -480,26 +480,27 @@ function getStreams(tmdbId, type, season, episode) {
           const cardInfo = parseCardInfo($, item);
           const extractedLinks = yield extractHubCloud(sourceResult.url, sourceResult.meta);
           return extractedLinks.map((link) => {
-            // Line 1: title (+ year) (+ S01E03 for TV)
-            let titleLine = title + (year ? ` (${year})` : "");
+            // Line 1: title · S01E03 (for TV) + quality
+            let titleLine = title;
             if (isSeries && season && episode) {
               titleLine += ` \u00B7 S${String(season).padStart(2, "0")}E${String(episode).padStart(2, "0")}`;
             }
+            if (sourceResult.meta.height) titleLine += ` ${sourceResult.meta.height}p`;
             const lines = [titleLine];
 
-            // Line 2: source · codec
+            // Line 3: source · codec
             const techParts = [];
             if (cardInfo.source) techParts.push(cardInfo.source);
             if (cardInfo.codec)  techParts.push(cardInfo.codec);
             if (techParts.length) lines.push("\uD83D\uDCFA " + techParts.join(" \u00B7 "));
 
-            // Line 3: languages
+            // Line 4: languages
             if (cardInfo.languages && cardInfo.languages.length) {
               lines.push("\uD83D\uDD0A " + cardInfo.languages.join(" + "));
             }
 
-            // Line 4: audio
-            if (cardInfo.audio) lines.push("\uD83C\uDFB5 " + cardInfo.audio);
+            // Line 5: audio (no space after emoji)
+            if (cardInfo.audio) lines.push("\uD83C\uDFB5" + cardInfo.audio);
 
             return {
               name: `4KHDHub - ${link.source}${sourceResult.meta.height ? ` ${sourceResult.meta.height}p` : ""}`,
