@@ -25,7 +25,7 @@
       ]
     },
     { 
-      "id": "showbox",
+      "id": "showboxeast",
       "name": "ShowBox East",
       "description": "ShowBox streaming using servers in eastern US",
       "version": "1.0",
@@ -47,7 +47,7 @@
       ]
     },
     { 
-      "id": "showbox",
+      "id": "showboxglobal",
       "name": "ShowBox Global",
       "description": "ShowBox streaming using servers globally",
       "version": "1.0",
