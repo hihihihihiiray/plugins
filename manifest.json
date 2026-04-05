@@ -24,50 +24,6 @@
         "en"
       ]
     },
-    { 
-      "id": "showboxeast",
-      "name": "ShowBox East",
-      "description": "ShowBox streaming using servers in eastern US",
-      "version": "1.0",
-      "author": "Nuvio Team",
-      "supportedTypes": [
-        "movie",
-        "tv",
-        "anime"
-      ],
-      "filename": "providers/showboxeast.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "mkv"
-      ],
-      "logo": "https://files.catbox.moe/4mdxz9.jpeg",
-      "contentLanguage": [
-        "en"
-      ]
-    },
-    { 
-      "id": "showboxglobal",
-      "name": "ShowBox Global",
-      "description": "ShowBox streaming using servers globally",
-      "version": "1.0",
-      "author": "Nuvio Team",
-      "supportedTypes": [
-        "movie",
-        "tv",
-        "anime"
-      ],
-      "filename": "providers/showboxglobal.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "mkv"
-      ],
-      "logo": "https://files.catbox.moe/4mdxz9.jpeg",
-      "contentLanguage": [
-        "en"
-      ]
-    },
     {
       "id": "4khdhub",
       "name": "4KHDHub",
