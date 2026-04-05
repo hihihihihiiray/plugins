@@ -7,7 +7,8 @@ const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 
 // ShowBox API Configuration
 const SHOWBOX_API_BASE = 'https://febapi.nuvioapp.space/api/media';
-const SHOWBOX_SERVER_REGION = 'aws'; // Change this to swap regions (e.g. 'USA7', 'UK1')
+const SHOWBOX_SERVER_REGION = 'USA5'; // Primary region
+const SHOWBOX_FALLBACK_REGION = 'USA7'; // Fallback if primary returns no streams
 
 // Working headers for ShowBox API
 const WORKING_HEADERS = {
@@ -127,6 +128,29 @@ function extractCodecDetails(text) {
     else if (lowerText.includes('8bit') || lowerText.includes('8-bit')) details.add('8-bit');
 
     return Array.from(details);
+}
+
+// Build ShowBox API URL for a given region
+function buildApiUrl(mediaType, tmdbId, seasonNum, episodeNum, region, cookie) {
+    if (mediaType === 'tv' && seasonNum && episodeNum) {
+        return `${SHOWBOX_API_BASE}/tv/${tmdbId}/oss=${region}/${seasonNum}/${episodeNum}?cookie=${encodeURIComponent(cookie)}`;
+    } else {
+        return `${SHOWBOX_API_BASE}/movie/${tmdbId}/oss=${region}?cookie=${encodeURIComponent(cookie)}`;
+    }
+}
+
+// Fetch and process streams from a given API URL
+function fetchStreams(apiUrl, mediaInfo, mediaType, seasonNum, episodeNum) {
+    console.log(`[ShowBox] Requesting: ${apiUrl}`);
+    return makeRequest(apiUrl)
+        .then(function(response) {
+            console.log(`[ShowBox] API Response status: ${response.status}`);
+            return response.json();
+        })
+        .then(function(data) {
+            console.log(`[ShowBox] API Response received:`, JSON.stringify(data, null, 2));
+            return processShowBoxResponse(data, mediaInfo, mediaType, seasonNum, episodeNum);
+        });
 }
 
 // Helper function to make HTTP requests
@@ -270,51 +294,37 @@ function getStreams(tmdbId, mediaType = 'movie', seasonNum = null, episodeNum = 
         .then(function(mediaInfo) {
             console.log(`[ShowBox] TMDB Info: "${mediaInfo.title}" (${mediaInfo.year || 'N/A'})`);
 
-            // Build API URL based on media type
-            let apiUrl;
-            if (mediaType === 'tv' && seasonNum && episodeNum) {
-                // TV format: /api/media/tv/:tmdbId/oss=:ossGroup/:season/:episode?cookie=:cookie
-                if (ossGroup) {
-                    apiUrl = `${SHOWBOX_API_BASE}/tv/${tmdbId}/oss=${ossGroup}/${seasonNum}/${episodeNum}?cookie=${encodeURIComponent(cookie)}`;
-                } else {
-                    apiUrl = `${SHOWBOX_API_BASE}/tv/${tmdbId}/${seasonNum}/${episodeNum}?cookie=${encodeURIComponent(cookie)}`;
-                }
-            } else {
-                // Movie format: /api/media/movie/:tmdbId?cookie=:cookie
-                apiUrl = `${SHOWBOX_API_BASE}/movie/${tmdbId}?cookie=${encodeURIComponent(cookie)}`;
-            }
+            const primaryUrl  = buildApiUrl(mediaType, tmdbId, seasonNum, episodeNum, ossGroup, cookie);
+            const fallbackUrl = buildApiUrl(mediaType, tmdbId, seasonNum, episodeNum, SHOWBOX_FALLBACK_REGION, cookie);
 
-            console.log(`[ShowBox] Requesting: ${apiUrl}`);
-
-            // Make request to ShowBox API
-            return makeRequest(apiUrl)
-                .then(function(response) {
-                    console.log(`[ShowBox] API Response status: ${response.status}`);
-                    return response.json();
+            // Try primary region first, fall back if no streams returned
+            return fetchStreams(primaryUrl, mediaInfo, mediaType, seasonNum, episodeNum)
+                .then(function(streams) {
+                    if (streams.length > 0) {
+                        console.log(`[ShowBox] Got ${streams.length} stream(s) from primary region (${ossGroup})`);
+                        return streams;
+                    }
+                    console.log(`[ShowBox] Primary region (${ossGroup}) returned no streams, trying fallback (${SHOWBOX_FALLBACK_REGION})...`);
+                    return fetchStreams(fallbackUrl, mediaInfo, mediaType, seasonNum, episodeNum);
                 })
-                .then(function(data) {
-                    console.log(`[ShowBox] API Response received:`, JSON.stringify(data, null, 2));
-                    
-                    // Process the response
-                    const streams = processShowBoxResponse(data, mediaInfo, mediaType, seasonNum, episodeNum);
-                    
+                .then(function(streams) {
                     if (streams.length === 0) {
-                        console.log(`[ShowBox] No streams found in API response`);
+                        console.log(`[ShowBox] No streams found from either region`);
                         return [];
                     }
-                    
+
                     // Sort streams by quality (highest first)
                     streams.sort(function(a, b) {
-                        const qualityOrder = { 
-                            'Original': 6, 
-                            '4K': 5, 
-                            '1440p': 4, 
-                            '1080p': 3, 
-                            '720p': 2, 
-                            '480p': 1, 
-                            '360p': 0, 
-                            '240p': -1, 
-                            'Unknown': -2 
+                        const qualityOrder = {
+                            'Original': 6,
+                            '4K': 5,
+                            '1440p': 4,
+                            '1080p': 3,
+                            '720p': 2,
+                            '480p': 1,
+                            '360p': 0,
+                            '240p': -1,
+                            'Unknown': -2
                         };
                         return (qualityOrder[b.quality] || -2) - (qualityOrder[a.quality] || -2);
                     });
