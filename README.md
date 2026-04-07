@@ -1,12 +1,12 @@
-# Nuvio Providers - made by Yoru
+# Best Nuvio Providers by Yoru
 
-A collection of high-quality local scrapers for the Nuvio streaming application. These scrapers allow you to fetch premium streams from various sources directly within the app.
+A collection of high-quality local scrapers made by Yoru (in my opinion) compiled for the Nuvio streaming application. These scrapers allow you to fetch premium and fast streams from various sources directly within the app.
 
 ## Installation
 
 1. Open the **Nuvio** app
 2. Go to **Settings → Local Scrapers**
-3. Add this repository URL:
+3. Paste this URL:
    ```
    https://raw.githubusercontent.com/hihihihihiiray/nuvio/refs/heads/main/manifest.json
    ```
