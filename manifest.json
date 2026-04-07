@@ -27,7 +27,7 @@
     {
       "id": "4khdhub",
       "name": "4KHDHub",
-      "description": "Direct links up to 4K (~2.7s)",
+      "description": "Direct links up to 4K (~2.6s)",
       "version": "1.0.2",
       "author": "Nuvio Team",
       "supportedTypes": [
@@ -47,7 +47,7 @@
     {
       "id": "uhdmovies",
       "name": "UHDMovies",
-      "description": "UHDMovies streaming with multiple resolutions (~3.5s)",
+      "description": "UHDMovies streaming with multiple resolutions (~3.6s)",
       "version": "1.2",
       "author": "Nuvio Team",
       "supportedTypes": [
@@ -88,7 +88,7 @@
     {
       "id": "animekai",
       "name": "AnimeKai",
-      "description": "AnimeKai streaming with fast load times, up to 1080p playback, and multi-server support (~3.5s)",
+      "description": "AnimeKai streaming with fast load times, up to 1080p playback, and multi-server support (~3.4s)",
       "version": "1.1",
       "author": "Nuvio Team",
       "supportedTypes": [
