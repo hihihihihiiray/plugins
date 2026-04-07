@@ -1,14 +1,9 @@
-/**
- * UHDMovies Provider - Ported from Kotlin CloudStream Extension
- * Based on: phisher98/cloudstream-extensions-phisher/UHDmoviesProvider
- */
-
 "use strict";
 
 // src/uhdmovies/index.js
-var DOMAIN = "https://uhdmovies.ink";
+var DOMAIN = "https://uhdmovies.rip";
 var TMDB_API = "https://api.themoviedb.org/3";
-var TMDB_API_KEY = "1c29a5198ee1854bd5eb45dbe8d17d92"
+var TMDB_API_KEY = "1865f43a0549ca50d341dd9ab8b29f49";
 var USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
 function getBaseUrl(url) {
   if (!url) return DOMAIN;
@@ -110,10 +105,8 @@ function extractThirdListItem(html) {
 }
 function getIndexQuality(str) {
   if (!str) return "Unknown";
-  // Check explicit resolution first (e.g. 2160p, 1080p, 720p)
   var m = str.match(/(\d{3,4})[pP]/);
   if (m) return m[1] + "p";
-  // Only treat 4K/UHD as 2160p when it's a standalone quality tag, not part of site names like "UHDMovies"
   if (/\b4[kK]\b/.test(str) || /\bUHD\b(?!movies)/i.test(str)) return "2160p";
   return "Unknown";
 }
@@ -545,68 +538,101 @@ function getStreams(tmdbId, mediaType, season, episode) {
   return getTmdbDetails(tmdbId, mediaType).then(function(tmdbDetails) {
     if (!tmdbDetails) return [];
     console.log("[UHDMovies] Title: " + tmdbDetails.title + " (" + tmdbDetails.year + ")");
-    return searchByTitle(tmdbDetails.title, tmdbDetails.year);
-  }).then(function(searchResults) {
-    if (!searchResults || searchResults.length === 0) {
-      console.log("[UHDMovies] No search results");
-      return [];
-    }
-    var isSeries = mediaType === "series" || mediaType === "tv";
-    function processResult(index) {
-      if (index >= searchResults.length) return Promise.resolve(allStreams);
-      var result = searchResults[index];
-      console.log("[UHDMovies] Processing: " + result.title);
-      var linksPromise = isSeries && season && episode ? getTvEpisodeLink(result.url, season, episode) : getMovieLinks(result.url);
-      return linksPromise.then(function(links) {
-        var extractPromises = links.map(function(linkData) {
-          var sourceLink = linkData.sourceLink;
-          if (!sourceLink) return Promise.resolve([]);
-          var finalLinkPromise = sourceLink.indexOf("unblockedgames") !== -1 ? bypassHrefli(sourceLink) : Promise.resolve(sourceLink);
-          return finalLinkPromise.then(function(finalLink) {
-            if (!finalLink) return [];
-            if (finalLink.indexOf("driveseed") !== -1 || finalLink.indexOf("driveleech") !== -1) {
-              return extractDriveseedPage(finalLink);
-            }
-            if (finalLink.indexOf("video-seed") !== -1) {
-              return extractVideoSeed(finalLink).then(function(url) {
-                if (!url) return [];
-                return [{ name: "UHDMovies", title: "UHDMovies " + (linkData.quality || "Unknown"), url, quality: linkData.quality || "Unknown" }];
-              });
-            }
-            return [{
-              name: "UHDMovies",
-              title: "UHDMovies " + (linkData.sourceName || linkData.quality || ""),
-              url: finalLink,
-              quality: linkData.quality || "Unknown"
-            }];
-          });
-        });
-        return Promise.all(extractPromises).then(function(results) {
-          results.forEach(function(streams) {
-            allStreams = allStreams.concat(streams);
-          });
-          return processResult(index + 1);
-        });
-      });
-    }
-    return processResult(0).then(function(streams) {
-      function scoreStream(s) {
-        var q = s.quality || "";
-        var rScore = 0;
-        if (/^4K/i.test(q))    rScore = 4;
-        else if (/1080p/i.test(q)) rScore = 3;
-        else if (/720p/i.test(q))  rScore = 2;
-        else if (/480p/i.test(q))  rScore = 1;
-        var sScore = 0;
-        if (/remux/i.test(q))       sScore = 5;
-        else if (/blu.?ray/i.test(q)) sScore = 4;
-        else if (/web.?dl/i.test(q))  sScore = 3;
-        else if (/webrip/i.test(q))   sScore = 2;
-        else if (/hdrip|dvdrip|hdtv/i.test(q)) sScore = 1;
-        return rScore * 10 + sScore;
+    return searchByTitle(tmdbDetails.title, tmdbDetails.year).then(function(searchResults) {
+      if (!searchResults || searchResults.length === 0) {
+        console.log("[UHDMovies] No search results");
+        return [];
       }
-      streams.sort(function(a, b) { return scoreStream(b) - scoreStream(a); });
-      return streams;
+      var isSeries = mediaType === "series" || mediaType === "tv";
+      function processResult(index) {
+        if (index >= searchResults.length) return Promise.resolve(allStreams);
+        var result = searchResults[index];
+        console.log("[UHDMovies] Processing: " + result.title);
+        var linksPromise = isSeries && season && episode ? getTvEpisodeLink(result.url, season, episode) : getMovieLinks(result.url);
+        return linksPromise.then(function(links) {
+          var extractPromises = links.map(function(linkData) {
+            var sourceLink = linkData.sourceLink;
+            if (!sourceLink) return Promise.resolve([]);
+            var finalLinkPromise = sourceLink.indexOf("unblockedgames") !== -1 ? bypassHrefli(sourceLink) : Promise.resolve(sourceLink);
+            return finalLinkPromise.then(function(finalLink) {
+              if (!finalLink) return [];
+              if (finalLink.indexOf("driveseed") !== -1 || finalLink.indexOf("driveleech") !== -1) {
+                return extractDriveseedPage(finalLink);
+              }
+              if (finalLink.indexOf("video-seed") !== -1) {
+                return extractVideoSeed(finalLink).then(function(url) {
+                  if (!url) return [];
+                  return [{ name: "UHDMovies", title: "UHDMovies " + (linkData.quality || "Unknown"), url, quality: linkData.quality || "Unknown" }];
+                });
+              }
+              return [{
+                name: "UHDMovies",
+                title: "UHDMovies " + (linkData.sourceName || linkData.quality || ""),
+                url: finalLink,
+                quality: linkData.quality || "Unknown"
+              }];
+            });
+          });
+          return Promise.all(extractPromises).then(function(results) {
+            results.forEach(function(streams) {
+              allStreams = allStreams.concat(streams);
+            });
+            return processResult(index + 1);
+          });
+        });
+      }
+      return processResult(0).then(function(streams) {
+        function scoreStream(s) {
+          var q = s.quality || "";
+          var rScore = 0;
+          if (/^4K/i.test(q))    rScore = 4;
+          else if (/1080p/i.test(q)) rScore = 3;
+          else if (/720p/i.test(q))  rScore = 2;
+          else if (/480p/i.test(q))  rScore = 1;
+          var sScore = 0;
+          if (/remux/i.test(q))       sScore = 5;
+          else if (/blu.?ray/i.test(q)) sScore = 4;
+          else if (/web.?dl/i.test(q))  sScore = 3;
+          else if (/webrip/i.test(q))   sScore = 2;
+          else if (/hdrip|dvdrip|hdtv/i.test(q)) sScore = 1;
+          return rScore * 10 + sScore;
+        }
+        streams.sort(function(a, b) { return scoreStream(b) - scoreStream(a); });
+
+        // ── Rewrite name and title fields for all streams ────────────────────
+        streams.forEach(function(s) {
+          // Extract size from the old title string e.g. "[15.44GB]" or "[2.1 GB]"
+          var sizeM = (s.title || "").match(/\[(\d+(?:\.\d+)?\s*(?:MB|GB|TB))\]/i);
+          var size = sizeM ? sizeM[1] : null;
+
+          // Parse resolution from quality string e.g. "4K | WEB-DL | x265/HEVC"
+          var resolution = (s.quality || "").split(" | ")[0] || "";
+
+          // Extract delivery method from old title e.g. "Driveseed ResumeCloud [...]"
+          var deliveryM = (s.title || "").match(/^Driveseed\s+(\S+)/i);
+          var delivery = deliveryM ? "DriveSeed " + deliveryM[1] : "DriveSeed";
+
+          // Reformat stream name: "UHDMovies DriveSeed ResumeCloud - 4K"
+          s.name = "UHDMovies " + delivery + (resolution ? " - " + resolution : "");
+
+          // Line 1: title + resolution (movie) OR title · S01E03 (TV)
+          var line1 = tmdbDetails.title;
+          if (isSeries && season && episode) {
+            line1 += " \u00B7 S" + String(season).padStart(2, "0") + "E" + String(episode).padStart(2, "0");
+          } else if (resolution) {
+            line1 += " " + resolution;
+          }
+
+          var lines = [line1];
+
+          // Line 2: file size
+          if (size) lines.push(size);
+
+          s.title = lines.join("\n");
+        });
+
+        return streams;
+      });
     });
   }).catch(function(err) {
     console.error("[UHDMovies] Error: " + err.message);
