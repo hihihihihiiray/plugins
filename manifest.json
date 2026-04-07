@@ -5,7 +5,7 @@
     { 
       "id": "showbox",
       "name": "ShowBox",
-      "description": "ShowBox streaming with multiple quality options and versions",
+      "description": "ShowBox streaming with multiple quality options and versions (~1-3s)",
       "version": "1.0",
       "author": "Nuvio Team",
       "supportedTypes": [
@@ -27,7 +27,7 @@
     {
       "id": "4khdhub",
       "name": "4KHDHub",
-      "description": "Direct links up to 4K",
+      "description": "Direct links up to 4K (~3s)",
       "version": "1.0.2",
       "author": "Nuvio Team",
       "supportedTypes": [
@@ -47,7 +47,7 @@
     {
       "id": "uhdmovies",
       "name": "UHDMovies",
-      "description": "UHD Movies streaming with multiple resolutions",
+      "description": "UHDMovies streaming with multiple resolutions (~3-4s)",
       "version": "1.2",
       "author": "Nuvio Team",
       "supportedTypes": [
@@ -67,7 +67,7 @@
     {
       "id": "vidlink",
       "name": "VidLink",
-      "description": "Vidlink streaming with fast load times and good quality",
+      "description": "Vidlink streaming with fast load times and good quality (~2s)",
       "version": "1.0",
       "author": "Nuvio Team",
       "supportedTypes": [
@@ -88,7 +88,7 @@
     {
       "id": "animekai",
       "name": "AnimeKai",
-      "description": "AnimeKai streaming with fast load times, up to 1080p playback, and multi-server support",
+      "description": "AnimeKai streaming with fast load times, up to 1080p playback, and multi-server support (~3-4s)",
       "version": "1.1",
       "author": "Nuvio Team",
       "supportedTypes": [
