@@ -49,7 +49,7 @@
       "name": "UHDMovies",
       "description": "UHDMovies streaming with multiple resolutions (~3.4s)",
       "version": "1.2",
-      "author": "Nuvio Team",
+      "author": "D3adlyRocket",
       "supportedTypes": [
         "movie",
         "tv"
