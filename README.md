@@ -11,3 +11,13 @@ A collection of high-quality local scrapers created by Yoru compiled (by me) for
    https://raw.githubusercontent.com/hihihihihiiray/nuvio/refs/heads/main/manifest.json
    ```
 4. Enable the scrapers you want to use
+
+   
+## Features
+
+- 🎬 Movies and TV Shows support
+- 🎯 Automatic TMDB integration
+- 📊 Multiple quality options
+- 🌍 Multi-language support
+- ⚡ Fast and reliable scraping
+- 🔒 Proper headers and referer handling
