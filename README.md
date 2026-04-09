@@ -35,7 +35,7 @@ A curated collection of the best high-quality scrapers compiled for the Nuvio st
 
 
 ## Disclaimer
--**No content is hosted by this repository.**
+**No content is hosted by this repository.**
 
 - Providers fetch publicly available content from third-party websites.
   
