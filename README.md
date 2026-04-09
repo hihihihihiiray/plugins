@@ -26,7 +26,7 @@ A curated collection of the best high-quality scrapers compiled for the Nuvio st
 ## Available Plugins
 | Provider | Language | Content | Quality | NuvioApp | NuvioTV |
 |---|---|---|---|---|---|
-| [![showbox.png](https://i.postimg.cc/nzzVyqYQ/showbox.png)](https://postimg.cc/67kNR2P9) ShowBox | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 | Shows & Movies | 4K / 1080p / 720p | ✅ | ❌ |
+| [![showbox.png](https://files.catbox.moe/4mdxz9.jpeg)](https://postimg.cc/67kNR2P9) ShowBox | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 | Shows & Movies | 4K / 1080p / 720p | ✅ | ❌ |
 | [![4khdhub.png](https://i.postimg.cc/Z5B7RF79/4khdhub.png)](https://postimg.cc/21YF9vfm) 4KHDHub | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 🇮🇳 | Shows & Movies | 4K / 1080p / 720p | ✅ | ✅ |
 | [![uhdmovies.png](https://i.postimg.cc/VkCg1svN/uhdmovies.png)](https://postimg.cc/3k3mFTgM) UHDMovies | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 🇮🇳 | Shows & Movies | 4K / 1080p / 720p | ✅ | ✅ |
 | 🎬 VidLink | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 | Shows & Movies | 1080p / 720p | ✅ | ✅ |
