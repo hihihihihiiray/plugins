@@ -8,7 +8,7 @@ A curated collection of the best high-quality scrapers compiled for the Nuvio st
 2. Go to **Settings → Plugins → Scroll down → Click on "Add new repository"**
 3. Paste this URL:
    ```
-   https://raw.githubusercontent.com/hihihihihiiray/nuvio/refs/heads/main
+   https://raw.githubusercontent.com/hihihihihiiray/plugins/refs/heads/main
    ```
 4. Enable the plugins you want to use
 
