@@ -10,7 +10,7 @@ A collection of the best high-quality scrapers (in my opinion) compiled for the 
    ```
    https://raw.githubusercontent.com/hihihihihiiray/nuvio/refs/heads/main/manifest.json
    ```
-4. Enable the scrapers you want to use
+4. Enable the plugins you want to use
 
    
 ## Features
