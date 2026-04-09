@@ -1,6 +1,6 @@
 # The Best Nuvio Plugins
 
-A collection of the best high-quality scrapers (in my opinion) compiled for the Nuvio streaming application. These scrapers allow you to fetch premium and fast streams from various sources directly within the app.
+A curated collection of the best high-quality scrapers compiled for the Nuvio streaming application. These plugins allow you to fetch high-quality, bufferless streams from various sources directly within the app.
 
 ## Installation
 
