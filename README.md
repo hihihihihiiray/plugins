@@ -5,7 +5,7 @@ A collection of the best high-quality scrapers (in my opinion) compiled for the 
 ## Installation
 
 1. Open the **Nuvio** app
-2. Go to **Settings → Local Scrapers**
+2. Go to **Settings → Plugins → Scroll down → Click on "Add new repository"**
 3. Paste this URL:
    ```
    https://raw.githubusercontent.com/hihihihihiiray/nuvio/refs/heads/main/manifest.json
@@ -26,8 +26,8 @@ A collection of the best high-quality scrapers (in my opinion) compiled for the 
 ## Available Plugins
 | Provider | Language | Content | Quality | NuvioApp | NuvioTV |
 |---|---|---|---|---|---|
-| [![showbox.png](https://i.postimg.cc/nzzVyqYQ/showbox.png)](https://postimg.cc/67kNR2P9) ShowBox | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 | Film & Serial | 4K / 1080p / 720p | ✅ | ❌ |
-| [![4khdhub.png](https://i.postimg.cc/Z5B7RF79/4khdhub.png)](https://postimg.cc/21YF9vfm) 4KHDHub | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 🇮🇳 | Film & Serial | 4K / 1080p / 720p | ✅ | ✅ |
-| [![uhdmovies.png](https://i.postimg.cc/VkCg1svN/uhdmovies.png)](https://postimg.cc/3k3mFTgM) UHDMovies | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 🇮🇳 | Film & Serial | 4K / 1080p / 720p | ✅ | ✅ |
-| 🎬 VidLink | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 | Film & Serial | 1080p / 720p | ✅ | ✅ |
-| [![animekai.png](https://i.postimg.cc/cLCqcnFV/animekai.png)](https://postimg.cc/9r6Nmr5p) AnimeKai | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 🇯🇵 | Anime | 1080p / 720p | ✅ | ✅ |
+| [![showbox.png](https://i.postimg.cc/nzzVyqYQ/showbox.png)](https://postimg.cc/67kNR2P9) ShowBox | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 | Shows & Movies | 4K / 1080p / 720p | ✅ | ❌ |
+| [![4khdhub.png](https://i.postimg.cc/Z5B7RF79/4khdhub.png)](https://postimg.cc/21YF9vfm) 4KHDHub | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 🇮🇳 | Shows & Movies | 4K / 1080p / 720p | ✅ | ✅ |
+| [![uhdmovies.png](https://i.postimg.cc/VkCg1svN/uhdmovies.png)](https://postimg.cc/3k3mFTgM) UHDMovies | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 🇮🇳 | Shows & Movies | 4K / 1080p / 720p | ✅ | ✅ |
+| 🎬 VidLink | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 | Shows & Movies | 1080p / 720p | ✅ | ✅ |
+| [![animekai.png](https://i.postimg.cc/cLCqcnFV/animekai.png)](https://postimg.cc/9r6Nmr5p) AnimeKai | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 🇯🇵 | Anime (Movies & Shows) | 1080p / 720p | ✅ | ✅ |
