@@ -4,7 +4,7 @@
 const cheerio = require('cheerio-without-node-native');
 
 // TMDB API Configuration
-const TMDB_API_KEY = '439c478a771f35c05022f9feabcca01c';
+const TMDB_API_KEY = '1c29a5198ee1854bd5eb45dbe8d17d92';
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 
 // Moviesdrive Configuration
