@@ -4,7 +4,7 @@
 console.log('[DahmerMovies] Initializing Dahmer Movies scraper');
 
 // Constants
-const TMDB_API_KEY = "439c478a771f35c05022f9feabcca01c";
+const TMDB_API_KEY = "1c29a5198ee1854bd5eb45dbe8d17d92";
 const DAHMER_MOVIES_API = 'https://a.111477.xyz';
 const TIMEOUT = 20000; // 20 seconds
 
