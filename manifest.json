@@ -67,7 +67,7 @@
     {
       "id": "dahmermovies",
       "name": "DahmerMovies",
-      "description": "Dahmer Movies streaming service. Can be slow at times to fetch and stream. Only use if needed.",
+      "description": "Dahmer Movies streaming service. Can be slow at times to fetch and stream. Only use if needed. (~9s)",
       "version": "1.0.1",
       "author": "Nuvio Team",
       "supportedTypes": [
@@ -88,7 +88,7 @@
     {
       "id": "hdhub4u",
       "name": "HDHub4u",
-      "description": "Direct links from HDHub4u with high-speed download support",
+      "description": "Direct links from HDHub4u with high-speed download support (~4s)",
       "version": "1.1",
       "author": "Nuvio Team",
       "supportedTypes": [
@@ -110,7 +110,7 @@
     {
       "id": "moviesdrive",
       "name": "MoviesDrive",
-      "description": "MoviesDrive - Movies and TV shows with multiple streaming servers",
+      "description": "MoviesDrive - Movies and TV shows with multiple streaming servers (~4s)",
       "version": "2.0",
       "author": "JK",
       "supportedTypes": ["movie", "tv"],
