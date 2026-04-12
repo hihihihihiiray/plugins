@@ -117,7 +117,7 @@
       "filename": "providers/moviesdrive.js",
       "enabled": true,
       "formats": ["mp4", "mkv", "m3u8"],
-      "logo": "https://i.postimg.cc/bwDbhq9q/moviesdrive.png",
+      "logo": "https://new2.moviesdrives.my/apple-touch-icon.png",
       "contentLanguage": ["en", "hi"]
     },
     {
