@@ -1,4 +1,4 @@
-/// 4KHDHub Scraper for Nuvio Local Scrapers
+// 4KHDHub Scraper for Nuvio Local Scrapers
 // React Native compatible
 
 "use strict";
