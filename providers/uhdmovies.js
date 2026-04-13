@@ -1,3 +1,6 @@
+// UHDMovies Scraper for Nuvio Local Scrapers
+// React Native compatible version
+
 "use strict";
 
 // src/uhdmovies/index.js
