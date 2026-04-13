@@ -1,5 +1,5 @@
 // HDHub4u Scraper for Nuvio Local Scrapers
-// React Native compatible
+// React Native compatible version
 
 var __create = Object.create;
 var __defProp = Object.defineProperty;
