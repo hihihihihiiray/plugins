@@ -113,12 +113,22 @@
       "description": "MoviesDrive - Movies and TV shows with multiple streaming servers (~4s)",
       "version": "2.0",
       "author": "JK",
-      "supportedTypes": ["movie", "tv"],
+      "supportedTypes": [
+        "movie", 
+        "tv"
+      ],
       "filename": "providers/moviesdrive.js",
       "enabled": true,
-      "formats": ["mp4", "mkv", "m3u8"],
+      "formats": [
+        "mp4", 
+        "mkv", 
+        "m3u8"
+      ],
       "logo": "https://new2.moviesdrives.my/apple-touch-icon.png",
-      "contentLanguage": ["en", "hi"]
+      "contentLanguage": [
+        "en", 
+        "hi"
+      ]
     },
     {
       "id": "vidlink",
