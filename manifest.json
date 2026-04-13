@@ -131,6 +131,32 @@
       ]
     },
     {
+      "id": "cinestream",
+      "name": "CineStream",
+      "description": "Multi Language Provider",
+      "version": "1.0.0",
+      "author": "Kabir",
+      "supportedTypes": ["movie", "tv"],
+      "filename": "providers/cinestream.js",
+      "enabled": true,
+      "formats": ["mp4", "m3u8"],
+      "logo": "https://i.postimg.cc/0NhjWWqT/cinestream.png",
+      "contentLanguage": ["en", "hi"]
+    },
+    {
+      "id": "hindmoviez",
+      "name": "HindMoviez",
+      "description": "HindMoviez - Hindi & English Movies and Series (480p / 720p / 1080p / 4K)",
+      "version": "1.0.0",
+      "author": "Sanchit (@S4NCHITT) — Murph's Streams",
+      "supportedTypes": ["movie", "tv"],
+      "filename": "providers/hindmoviez.js",
+      "enabled": true,
+      "formats": ["mp4", "mkv", "m3u8"],
+      "logo": "https://i.postimg.cc/5t55Csm4/hindmoviez.png",
+      "contentLanguage": ["en", "hi"]
+    },
+    {
       "id": "vidlink",
       "name": "VidLink",
       "description": "Vidlink streaming with fast load times and good quality (~2s)",
