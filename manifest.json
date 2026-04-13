@@ -67,7 +67,7 @@
     {
       "id": "dahmermovies",
       "name": "111Movies",
-      "description": "111Movies streaming service. Can be slow at times to fetch and stream, only use if needed. (~4-10s)",
+      "description": "111Movies streaming service. Can be slow at times to fetch and stream, only use if needed. Formerly DahmerMovies. (~4-10s)",
       "version": "1.0.1",
       "author": "Nuvio Team",
       "supportedTypes": [
@@ -80,7 +80,7 @@
         "mkv",
         "m3u8"
       ],
-      "logo": "https://litter.catbox.moe/vhfrhg.jpeg",
+      "logo": "https://litter.catbox.moe/fi9z74.jpeg",
       "contentLanguage": [
         "en"
       ]
