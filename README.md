@@ -43,3 +43,4 @@ This repository is a personal collection of public plugins made by other people 
 ## Credits
 - **Yoruix**
 - **D3adlyRocket**
+- **Phisher98**
