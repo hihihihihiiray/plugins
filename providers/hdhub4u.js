@@ -1,7 +1,6 @@
-/**
- * hdhub4u - Built from src/hdhub4u/
- * Generated: 2026-03-07T05:22:15.721Z
- */
+// HDHub4u Scraper for Nuvio Local Scrapers
+// React Native compatible
+
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __defProps = Object.defineProperties;
