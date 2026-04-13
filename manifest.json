@@ -67,7 +67,7 @@
     {
       "id": "dahmermovies",
       "name": "111Movies",
-      "description": "111Movies streaming service, formerly known as DahmerMovies. Can be slow at times to fetch and stream, only use if needed. (~4-10s)",
+      "description": "111Movies streaming service. Can be slow at times to fetch and stream, only use if needed. Formerly DahmerMovies. (~4-10s)",
       "version": "1.2",
       "author": "Nuvio Team",
       "supportedTypes": [
