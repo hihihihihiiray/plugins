@@ -133,8 +133,8 @@
     {
       "id": "hindmoviez",
       "name": "HindMoviez",
-      "author": "Sanchitt",
-      "description": "HindMoviez - Hindi & English Movies and Series",
+      "author": "Sanchit",
+      "description": "HindMoviez - Hindi & English Movies and Series (~5s)",
       "version": "1.0",
       "supportedTypes": [
         "movie", 
