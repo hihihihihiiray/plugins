@@ -1,5 +1,5 @@
 // 4KHDHub Scraper for Nuvio Local Scrapers
-// React Native compatible
+// React Native compatible version
 
 "use strict";
 var __defProp = Object.defineProperty;
