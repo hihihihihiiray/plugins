@@ -22,6 +22,7 @@ A curated collection of the best high-quality scrapers compiled for the Nuvio st
 | [![56ivks.png](https://files.catbox.moe/56ivks.png)](https://postimg.cc/svGK7JPb) DahmerMovies | 🏴󠁧󠁢󠁥󠁮󠁧󠁿  | Shows & Movies | 4K / 1080p / 720p | ✅ | ✅ |
 | [![download-(2).png](https://i.postimg.cc/cJ6s6jq8/download-(2).png)](https://postimg.cc/CZTyQcxF) HDHub4u | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 🇮🇳 | Shows & Movies | 4K / 1080p / 720p | ✅ | ✅ |
 | [![moviesdrive.png](https://i.postimg.cc/PrKhFqtK/moviesdrive.png)](https://postimg.cc/56HZXbQF) MoviesDrive |🏴󠁧󠁢󠁥󠁮󠁧󠁿 | Shows & Movies | 4K / 1080p / 720p | ✅ | ✅ |
+|[![JYryAtEn]([https://ruayamo.s-ul.eu/JYryAtEn)](https://postimg.cc/hJJCb5bv) HindMoviez |🏴󠁧󠁢󠁥󠁮󠁧󠁿 🇮🇳 | Shows & Movies | 4K / 1080p / 720p | ✅ | ✅ |
 | 🎬 VidLink | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 | Shows & Movies | 1080p / 720p | ✅ | ✅ |
 | [![animekai.png](https://i.postimg.cc/cLCqcnFV/animekai.png)](https://postimg.cc/9r6Nmr5p) AnimeKai | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 🇯🇵 | Anime (Shows & Movies) | 1080p / 720p | ✅ | ✅ |
 
