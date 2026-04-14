@@ -14,8 +14,7 @@ const DOMAIN_CACHE_TTL = 4 * 60 * 60 * 1000; // 4 hours
 let domainCacheTimestamp = 0;
 
 const HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0",
-    "Referer": `${MAIN_URL}/`,
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
 };
 
 // =================================================================================
