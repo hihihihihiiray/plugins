@@ -131,27 +131,6 @@
       ]
     },
     {
-      "id": "cinestream",
-      "name": "CineStream",
-      "description": "Multi Language Provider",
-      "version": "1.0",
-      "supportedTypes": [
-        "movie", 
-        "tv"
-      ],
-      "filename": "providers/cinestream.js",
-      "enabled": true,
-      "formats": [
-        "mp4", 
-        "m3u8"
-      ],
-      "logo": "https://i.postimg.cc/0NhjWWqT/cinestream.png",
-      "contentLanguage": [
-        "en", 
-        "hi"
-      ]
-    },
-    {
       "id": "hindmoviez",
       "name": "HindMoviez",
       "author": "Sanchit",
