@@ -6,7 +6,7 @@ console.log('[DahmerMovies] Initializing Dahmer Movies scraper');
 // Constants
 const TMDB_API_KEY = "1c29a5198ee1854bd5eb45dbe8d17d92";
 const DAHMER_MOVIES_API = 'https://a.111477.xyz';
-const TIMEOUT = 20000; // 20 seconds
+const TIMEOUT = 15000; // 15 seconds
 
 const BATCH_SIZE = 3;          // links resolved in parallel per batch
 const BATCH_GAP_MS = 400;      // gap between batches (only paid when a 429 occurred)
@@ -123,7 +123,7 @@ function sleep(ms) {
 function resolveFinalUrl(startUrl) {
     const maxRedirects = 5;
     const referer = 'https://a.111477.xyz/';
-    const userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36';
+    const userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36';
 
     function attemptResolve(url, count, retryCount = 0) {
         if (count >= maxRedirects) {
