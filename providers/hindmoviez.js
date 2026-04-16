@@ -13,6 +13,7 @@ const BASE_URL     = 'https://hindmovie.ltd';
 const TMDB_API_KEY = '1c29a5198ee1854bd5eb45dbe8d17d92';
 const PLUGIN_TAG   = '[HindMoviez]';
 
+
 // ── Cloudflare Worker proxy ────────────────────────────────────────────────────
 // Routes all stream URLs through CF edge for:
 //   • Range / 206 Partial Content  → seek works on Smart TV players
@@ -27,7 +28,7 @@ function hmProxyUrl(rawUrl) {
 }
 
 const DEFAULT_HEADERS = {
-  'User-Agent'      : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36',
+  'User-Agent'      : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
   'Accept'          : 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
   'Accept-Language' : 'en-US,en;q=0.9',
 };
@@ -530,8 +531,11 @@ function getStreams(tmdbId, type, season, episode) {
 
                 // ── Stream title (subtitle lines below name) ──────────────────
                 var titleLines = [];
+                if (info.quality)            titleLines.push('📺 ' + info.quality + (info.is10bit ? ' 10bit' : ''));
                 if (info.source)             titleLines.push('🎞 ' + info.source);
                 if (info.languages.length)   titleLines.push('🔊 ' + info.languages.join(' + '));
+                if (info.size)               titleLines.push('💾 ' + info.size);
+                titleLines.push('by Sanchit · @S4NCHITT · Murph\'s Streams');
 
                 // Route through Cloudflare Worker for seek + edge cache + TV compatibility
                 var proxiedUrl = hmProxyUrl(url);
@@ -541,6 +545,7 @@ function getStreams(tmdbId, type, season, episode) {
                   title : titleLines.join('\n'),
                   url   : proxiedUrl,
                   quality: info.quality || undefined,
+                  size  : info.size || undefined,
                   behaviorHints: {
                     notWebReady: false,
                     bingeGroup : 'hindmoviez-' + serverName.replace(/\s+/g, '-').toLowerCase(),
