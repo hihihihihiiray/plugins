@@ -11,8 +11,8 @@ const DECRYPT_API = 'https://enc-dec.app/api/dec-videasy';
 const HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36',
     'Accept': '*/*',
-    'Origin': 'https://cineby.gd',
-    'Referer': 'https://cineby.gd/'
+    'Origin': 'https://player.videasy.net',
+    'Referer': 'https://player.videasy.net/'
 };
 
 // Server configurations from Python sample
@@ -163,7 +163,13 @@ function fetchFromServer(serverName, serverConfig, mediaInfo, tmdbId, seasonNum,
             return [];
         }
 
-        const streams = decrypted.sources.map(function(source) {
+        // Filter out HDR sources (they may cause playback issues)
+        const nonHDRSources = decrypted.sources.filter(function(source) {
+            const quality = source.quality || '';
+            return !quality.toUpperCase().includes('HDR');
+        });
+
+        const streams = nonHDRSources.map(function(source) {
             const quality = extractQuality(source);
             const streamName = `Videasy ${serverName} (${serverConfig.language}) - ${quality}`;
 
@@ -174,8 +180,8 @@ function fetchFromServer(serverName, serverConfig, mediaInfo, tmdbId, seasonNum,
                 quality: quality,
                 headers: {
                     'User-Agent': HEADERS['User-Agent'],
-                    'Referer': HEADERS['Referer'],
-                    'Origin': HEADERS['Origin']
+                    'Origin': 'https://player.videasy.net',
+                    'Referer': 'https://player.videasy.net/'
                 },
                 provider: 'videasy'
             };
