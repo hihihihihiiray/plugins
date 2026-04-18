@@ -6,7 +6,7 @@ console.log('[Videasy] Initializing Videasy scraper');
 // Constants
 const TMDB_API_KEY = "1c29a5198ee1854bd5eb45dbe8d17d92";
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
-const DECRYPT_API = 'https://enc-dec.app/api';
+const DECRYPT_API = 'https://enc-dec.app/api/dec-videasy';
 
 const HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36',
