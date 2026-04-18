@@ -12,7 +12,7 @@ const DECRYPT_API = 'https://enc-dec.app/api/dec-vidfast';
 const VERSION = "1";
 
 const HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36',
     'Referer': 'https://vidfast.pro/',
     'X-Requested-With': 'XMLHttpRequest'
 };
@@ -52,11 +52,26 @@ function getTMDBDetails(tmdbId, mediaType) {
 
 // Extract encrypted text from page HTML
 function extractEncryptedText(html) {
-    // Pattern from Python: \\"en\\":\\"(.*?)\\"
-    const match = html.match(/\\"en\\":\\"(.*?)\\"/);
+    console.log(`[VidFast] HTML length: ${html.length}`);
+    
+    // Try multiple patterns
+    let match = html.match(/\\"en\\":\\"([^"\\]+)\\"/);
     if (!match) {
+        // Try without escaped quotes
+        match = html.match(/"en":"([^"]+)"/);
+    }
+    if (!match) {
+        // Try looking for the data object
+        match = html.match(/data\s*=\s*"([^"]+)"/);
+    }
+    
+    if (!match) {
+        console.log('[VidFast] Failed to extract encrypted text. HTML sample:');
+        console.log(html.substring(0, 500));
         throw new Error('Could not extract encrypted text from page');
     }
+    
+    console.log(`[VidFast] Extracted text length: ${match[1].length}`);
     return match[1];
 }
 
@@ -98,7 +113,7 @@ function extractQuality(source) {
     if (/720/i.test(quality)) return '720p';
     if (/480/i.test(quality)) return '480p';
     if (/360/i.test(quality)) return '360p';
-    if (/auto|adaptive/i.test(quality)) return 'Auto';
+    if (/auto|adaptive/i.test(quality)) return 'Adaptive';
     
     return quality;
 }
@@ -106,6 +121,7 @@ function extractQuality(source) {
 // Fetch and decrypt streams from a single server
 function fetchServerStreams(serverData, streamBaseUrl, token, mediaInfo) {
     const streamUrl = `${streamBaseUrl}/${serverData.data}`;
+    console.log(`[VidFast] Fetching stream for server ${serverData.name || 'unknown'}: ${streamUrl}`);
     
     return fetch(streamUrl, {
         method: 'POST',
@@ -116,13 +132,18 @@ function fetchServerStreams(serverData, streamBaseUrl, token, mediaInfo) {
     }).then(function(response) {
         return response.text();
     }).then(function(encryptedStream) {
+        console.log(`[VidFast] Stream encrypted response length: ${encryptedStream.length}`);
         return decryptVidFast(encryptedStream);
     }).then(function(decrypted) {
+        console.log(`[VidFast] Stream decrypted:`, decrypted);
+        
         if (!decrypted || !decrypted.sources) {
+            console.log(`[VidFast] No sources in decrypted response for ${serverData.name}`);
             return [];
         }
 
         const sources = Array.isArray(decrypted.sources) ? decrypted.sources : [decrypted.sources];
+        console.log(`[VidFast] Found ${sources.length} source(s) for ${serverData.name}`);
         
         return sources.map(function(source) {
             const quality = extractQuality(source);
@@ -171,6 +192,7 @@ async function scrapeVidFast(tmdbId, mediaInfo, seasonNum, episodeNum) {
     console.log(`[VidFast] Got token and URLs`);
 
     // Step 4: Fetch and decrypt servers list
+    console.log(`[VidFast] Fetching servers from: ${serversUrl}`);
     const serversEncrypted = await fetch(serversUrl, {
         method: 'POST',
         headers: {
@@ -179,8 +201,18 @@ async function scrapeVidFast(tmdbId, mediaInfo, seasonNum, episodeNum) {
         }
     }).then(r => r.text());
 
+    console.log(`[VidFast] Servers encrypted response length: ${serversEncrypted.length}`);
     const serversDecrypted = await decryptVidFast(serversEncrypted);
+    
+    if (!serversDecrypted || !Array.isArray(serversDecrypted)) {
+        console.log('[VidFast] Servers decrypt failed or returned non-array');
+        return [];
+    }
+    
     console.log(`[VidFast] Found ${serversDecrypted.length} server(s)`);
+    if (serversDecrypted.length > 0) {
+        console.log(`[VidFast] First server:`, serversDecrypted[0]);
+    }
 
     // Step 5: Fetch streams from all servers in parallel
     const streamPromises = serversDecrypted.map(function(server) {
