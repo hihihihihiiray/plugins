@@ -107,7 +107,7 @@ function buildServerUrl(serverConfig, mediaInfo, tmdbId, seasonNum, episodeNum) 
 
 // Extract quality from URL or source data
 function extractQuality(source) {
-    let quality = source.quality || 'Unknown';
+    let quality = source.quality || '4K';
 
     // Check if it's a resolution
     if (/^\d{3,4}p?$/i.test(quality)) {
