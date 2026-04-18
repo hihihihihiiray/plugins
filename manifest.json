@@ -175,6 +175,28 @@
       ]
     },
     {
+      "id": "videasy",
+      "name": "VidEasy",
+      "description": "VideoEasy streaming with multiple server support",
+      "version": "1.0",
+      "author": "Nuvio Team",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/videasy.js",
+      "enabled": true,
+      "formats": [
+        "m3u8",
+        "mp4",
+        "mkv"
+      ],
+      "logo": "https://www.videasy.net/logo.png",
+      "contentLanguage": [
+        "en",
+      ]
+    },
+    {
       "id": "animekai",
       "name": "AnimeKai",
       "description": "AnimeKai streaming with fast load times, up to 1080p playback, and multi-server support (~3s)",
