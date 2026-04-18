@@ -1,5 +1,6 @@
-// Videasy Scraper for Nuvio Local Scrapers
+// VidEasy Scraper for Nuvio Local Scrapers
 // React Native compatible version
+// English servers only (for improved fetching times)
 
 console.log('[Videasy] Initializing Videasy scraper');
 
