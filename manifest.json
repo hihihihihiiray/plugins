@@ -188,9 +188,10 @@
       "enabled": true,
       "formats": [
         "m3u8",
-        "mp4"
+        "mp4",
+        "mkv"
       ],
-      "logo": "https://vidlink.pro/favicon.ico",
+      "logo": "https://www.videasy.net/logo.png",
       "contentLanguage": [
         "en"
       ]
