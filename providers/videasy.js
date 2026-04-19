@@ -1,242 +1,259 @@
-// VidEasy Scraper for Nuvio Local Scrapers by D3adlyRocket
+// VidEasy Scraper for Nuvio Local Scrapers
 // React Native compatible version
+// English servers only (for improved fetching times)
 
-var __defProp = Object.defineProperty;
-var __defProps = Object.defineProperties;
-var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
-var __getOwnPropSymbols = Object.getOwnPropertySymbols;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __propIsEnum = Object.prototype.propertyIsEnumerable;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __spreadValues = (a, b) => {
-  for (var prop in b || (b = {}))
-    if (__hasOwnProp.call(b, prop))
-      __defNormalProp(a, prop, b[prop]);
-  if (__getOwnPropSymbols)
-    for (var prop of __getOwnPropSymbols(b)) {
-      if (__propIsEnum.call(b, prop))
-        __defNormalProp(a, prop, b[prop]);
-    }
-  return a;
+console.log('[Videasy] Initializing Videasy scraper');
+
+// Constants
+const TMDB_API_KEY = "1c29a5198ee1854bd5eb45dbe8d17d92";
+const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
+const DECRYPT_API = 'https://enc-dec.app/api/dec-videasy';
+
+const HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36',
+    'Accept': '*/*',
+    'Origin': 'https://cineby.sc',
+    'Referer': 'https://cineby.sc/'
 };
-var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
-var __async = (__this, __arguments, generator) => {
-  return new Promise((resolve, reject) => {
-    var fulfilled = (value) => {
-      try {
-        step(generator.next(value));
-      } catch (e) {
-        reject(e);
-      }
+
+// Server configurations
+const SERVERS = {
+    'Neon': { url: 'https://api.videasy.net/myflixerzupcloud/sources-with-title', language: 'Original' },
+    'Yoru': { url: 'https://api.videasy.net/cdn/sources-with-title', language: 'Original', moviesOnly: true },
+};
+
+// Helper function to make HTTP requests
+function makeRequest(url, options = {}) {
+    return fetch(url, {
+        headers: { ...HEADERS, ...options.headers },
+        ...options
+    }).then(function(response) {
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        return response;
+    });
+}
+
+// Double URL encode (critical for Videasy)
+function doubleEncode(str) {
+    return encodeURIComponent(encodeURIComponent(str));
+}
+
+// Get TMDB details
+function getTMDBDetails(tmdbId, mediaType) {
+    const endpoint = mediaType === 'tv' ? 'tv' : 'movie';
+    const url = `${TMDB_BASE_URL}/${endpoint}/${tmdbId}?api_key=${TMDB_API_KEY}&append_to_response=external_ids`;
+    
+    return makeRequest(url).then(function(response) {
+        return response.json();
+    }).then(function(data) {
+        const isTv = mediaType === 'tv';
+        return {
+            title: isTv ? data.name : data.title,
+            year: (isTv ? data.first_air_date : data.release_date)?.substring(0, 4) || '',
+            imdbId: data.external_ids?.imdb_id || '',
+            mediaType: isTv ? 'tv' : 'movie'
+        };
+    }).catch(function(error) {
+        console.log(`[Videasy] TMDB lookup failed: ${error.message}`);
+        return null;
+    });
+}
+
+// Decrypt encrypted response
+function decryptData(encryptedText, tmdbId) {
+    return fetch(DECRYPT_API, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'User-Agent': HEADERS['User-Agent']
+        },
+        body: JSON.stringify({ text: encryptedText, id: tmdbId })
+    }).then(function(response) {
+        return response.json();
+    }).then(function(data) {
+        return data.result;
+    });
+}
+
+// Build server URL
+function buildServerUrl(serverConfig, mediaInfo, tmdbId, seasonNum, episodeNum) {
+    const params = {
+        title: doubleEncode(mediaInfo.title),
+        mediaType: mediaInfo.mediaType,
+        year: mediaInfo.year,
+        tmdbId: tmdbId,
+        imdbId: mediaInfo.imdbId
     };
-    var rejected = (value) => {
-      try {
-        step(generator.throw(value));
-      } catch (e) {
-        reject(e);
-      }
-    };
-    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
-    step((generator = generator.apply(__this, __arguments)).next());
-  });
-};
 
-// src/fmovies/index.js
-var TMDB_API_KEY = "1c29a5198ee1854bd5eb45dbe8d17d92";
-var TMDB_BASE_URL = "https://api.themoviedb.org/3";
-var DECRYPT_API_URL = "https://enc-dec.app/api/dec-videasy";
-var REQUEST_HEADERS = {
-  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36",
-  Connection: "keep-alive"
-};
-var PLAYBACK_HEADERS = {
-  "User-Agent": REQUEST_HEADERS["User-Agent"],
-  Accept: "application/vnd.apple.mpegurl,application/x-mpegURL,*/*",
-  "Accept-Language": "en-US,en;q=0.9",
-  Referer: "https://www.cineby.sc/",
-  Origin: "https://www.cineby.sc",
-  "Sec-Fetch-Dest": "video",
-  "Sec-Fetch-Mode": "cors",
-  "Sec-Fetch-Site": "cross-site"
-};
-var SERVERS = [
-  {
-    name: "Neon",
-    language: "Original",
-    url: "https://api.videasy.net/myflixerzupcloud/sources-with-title"
-  },
-  {
-    name: "Yoru",
-    language: "Original",
-    url: "https://api.videasy.net/cdn/sources-with-title"
-  }
-];
-function getJson(url) {
-  return fetch(url, { headers: REQUEST_HEADERS }).then((response) => {
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status} for ${url}`);
+    // Add TV-specific params
+    if (mediaInfo.mediaType === 'tv' && seasonNum && episodeNum) {
+        params.seasonId = seasonNum;
+        params.episodeId = episodeNum;
     }
-    return response.json();
-  });
-}
-function getText(url) {
-  return fetch(url, { headers: REQUEST_HEADERS }).then((response) => {
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status} for ${url}`);
-    }
-    return response.text();
-  });
-}
-function postJson(url, payload) {
-  return fetch(url, {
-    method: "POST",
-    headers: __spreadProps(__spreadValues({}, REQUEST_HEADERS), {
-      "Content-Type": "application/json"
-    }),
-    body: JSON.stringify(payload)
-  }).then((response) => {
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status} for ${url}`);
-    }
-    return response.json();
-  });
-}
-function fetchMediaDetails(tmdbId, mediaType) {
-  const normalizedType = mediaType === "tv" || mediaType === "series" ? "tv" : "movie";
-  const url = `${TMDB_BASE_URL}/${normalizedType}/${tmdbId}?api_key=${TMDB_API_KEY}&append_to_response=external_ids`;
-  return getJson(url).then((data) => ({
-    tmdbId: String(data.id || tmdbId),
-    mediaType: normalizedType,
-    title: normalizedType === "tv" ? data.name : data.title,
-    year: normalizedType === "tv" ? String(data.first_air_date || "").slice(0, 4) : String(data.release_date || "").slice(0, 4),
-    imdbId: data.external_ids && data.external_ids.imdb_id ? data.external_ids.imdb_id : ""
-  }));
-}
-function buildServerUrl(server, media, season, episode) {
-  const params = new URLSearchParams();
-  params.set("title", encodeURIComponent(encodeURIComponent(media.title).replace(/\+/g, "%20")));
-  params.set("mediaType", media.mediaType);
-  params.set("year", media.year || "");
-  params.set("tmdbId", media.tmdbId);
-  params.set("imdbId", media.imdbId || "");
-  if (media.mediaType === "tv") {
-    params.set("seasonId", String(season || 1));
-    params.set("episodeId", String(episode || 1));
-  }
-  return `${server.url}?${params.toString()}`;
-}
-function decryptPayload(encryptedText, tmdbId) {
-  return postJson(DECRYPT_API_URL, { text: encryptedText, id: String(tmdbId) }).then((response) => response.result || {});
-}
-function normalizeQuality(value) {
-  const raw = String(value || "").trim();
-  if (!raw) {
-    return "Adaptive";
-  }
-  const upper = raw.toUpperCase();
-  if (/^\d{3,4}P$/.test(upper)) {
-    return upper;
-  }
-  if (/^\d{3,4}p$/.test(raw)) {
-    return raw;
-  }
-  if (/hindi/i.test(raw)) {
-    return "Adaptive";
-  }
-  return raw;
-}
-function createStream(source, server, media) {
-  const quality = normalizeQuality(source.quality);
-  const title = media.year ? `${media.title} (${media.year})` : media.title;
-  return {
-    name: `VidEasy ${server.name} - ${quality}`,
-    title,
-    url: source.url,
-    quality,
-    headers: PLAYBACK_HEADERS,
-    provider: "fmovies",
-    language: server.language
-  };
-}
-function fetchFromServer(server, media, season, episode) {
-  return getText(buildServerUrl(server, media, season, episode)).then((encryptedText) => {
-    if (!encryptedText || !encryptedText.trim()) {
-      return [];
-    }
-    return decryptPayload(encryptedText, media.tmdbId);
-  }).then((payload) => {
-    const sources = Array.isArray(payload && payload.sources) ? payload.sources : [];
-    return sources.filter((source) => source && typeof source.url === "string" && source.url.includes("workers.dev")).map((source) => createStream(source, server, media));
-  }).catch(() => []);
-}
-function dedupeStreams(streams) {
-  const seen = /* @__PURE__ */ new Set();
-  return streams.filter((stream) => {
-    if (seen.has(stream.url)) {
-      return false;
-    }
-    seen.add(stream.url);
-    return true;
-  });
-}
-  function sortStreams(streams) {
-  const rank = (quality) => {
-    if (!quality) return 0;
 
-    const q = String(quality).toLowerCase();
+    // Add server-specific params (language for German/Italian/French servers)
+    if (serverConfig.params) {
+        Object.assign(params, serverConfig.params);
+    }
 
-    // Explicit 4K detection
-    if (q.includes("4k") || q.includes("2160")) return 2160;
+    const queryString = Object.keys(params)
+        .map(k => `${k}=${params[k]}`)
+        .join('&');
 
-    // Extract numeric resolution (e.g., 1080p, 720p)
-    const match = q.match(/(\d{3,4})/);
+    return `${serverConfig.url}?${queryString}`;
+}
+
+function extractQuality(source) {
+    let quality = (source.quality || '').toLowerCase();
+    const url = (source.url || '').toLowerCase();
+
+    // 🎯 Direct 4K detection (strong match)
+    if (
+        /2160p|4k|uhd/.test(quality) ||
+        /2160p|4k|uhd/.test(url)
+    ) {
+        return '2160p'; // normalize to one label
+    }
+
+    // 1440p
+    if (/1440p/.test(quality) || /1440p/.test(url)) {
+        return '1440p';
+    }
+
+    // 1080p
+    if (/1080p|fullhd|fhd/.test(quality) || /1080p/.test(url)) {
+        return '1080p';
+    }
+
+    // 720p
+    if (/720p|hd/.test(quality) || /720p/.test(url)) {
+        return '720p';
+    }
+
+    // 480p
+    if (/480p|sd/.test(quality) || /480p/.test(url)) {
+        return '480p';
+    }
+
+    // Generic numeric fallback (e.g. "360p", "1080")
+    const match = url.match(/(\d{3,4})p?/);
     if (match) {
-      return parseInt(match[1], 10);
+        return match[1] + 'p';
     }
 
-    // Adaptive streams should be BELOW real resolutions
-    if (q.includes("adaptive") || q.includes("auto")) {
-      return 1;
+    if (/adaptive|auto/.test(quality)) return 'Adaptive';
+
+    return 'Unknown';
+}
+
+// Fetch from a single server
+function fetchFromServer(serverName, serverConfig, mediaInfo, tmdbId, seasonNum, episodeNum) {
+    // Skip movie-only servers for TV shows
+    if (mediaInfo.mediaType === 'tv' && serverConfig.moviesOnly) {
+        console.log(`[Videasy] Skipping ${serverName} - movies only`);
+        return Promise.resolve([]);
     }
 
-    return 0;
-  };
+    const url = buildServerUrl(serverConfig, mediaInfo, tmdbId, seasonNum, episodeNum);
+    console.log(`[Videasy] Fetching ${serverName}...`);
 
-  return [...streams].sort((a, b) => rank(b.quality) - rank(a.quality));
+    return makeRequest(url).then(function(response) {
+        return response.text();
+    }).then(function(encryptedData) {
+        if (!encryptedData || encryptedData.trim() === '') {
+            throw new Error('Empty response');
+        }
+        return decryptData(encryptedData, tmdbId);
+    }).then(function(decrypted) {
+        if (!decrypted || !decrypted.sources || !Array.isArray(decrypted.sources)) {
+            return [];
+        }
+
+        const streams = decrypted.sources.map(function(source) {
+            const quality = extractQuality(source);
+            const streamName = `VidEasy ${serverName} - ${quality}`;
+
+            return {
+                name: streamName,
+                title: `${mediaInfo.title} (${mediaInfo.year})`,
+                url: source.url,
+                quality: quality,
+                headers: {
+                    'User-Agent': HEADERS['User-Agent'],
+                    'Referer': HEADERS['Referer'],
+                    'Origin': HEADERS['Origin']
+                },
+                provider: 'videasy'
+            };
+        });
+
+        console.log(`[Videasy] ${serverName}: ${streams.length} stream(s)`);
+        return streams;
+    }).catch(function(error) {
+        console.log(`[Videasy] ${serverName} failed: ${error.message}`);
+        return [];
+    });
 }
-  
-function flattenResults(results) {
-  return results.reduce((all, item) => all.concat(item || []), []);
+
+// Main function
+function getStreams(tmdbId, mediaType = 'movie', seasonNum = null, episodeNum = null) {
+    console.log(`[Videasy] Fetching streams for TMDB ID: ${tmdbId}, Type: ${mediaType}${seasonNum ? `, S${seasonNum}E${episodeNum}` : ''}`);
+
+    return getTMDBDetails(tmdbId, mediaType).then(function(mediaInfo) {
+        if (!mediaInfo) {
+            console.log('[Videasy] Failed to get TMDB details');
+            return [];
+        }
+
+        console.log(`[Videasy] Title: "${mediaInfo.title}" (${mediaInfo.year})`);
+
+        // Fetch from all servers in parallel
+        const serverPromises = Object.keys(SERVERS).map(function(serverName) {
+            return fetchFromServer(serverName, SERVERS[serverName], mediaInfo, tmdbId, seasonNum, episodeNum);
+        });
+
+        return Promise.all(serverPromises).then(function(results) {
+            // Flatten and deduplicate by URL
+            const allStreams = results.flat();
+            const uniqueStreams = [];
+            const seenUrls = new Set();
+
+            allStreams.forEach(function(stream) {
+                if (!seenUrls.has(stream.url)) {
+                    seenUrls.add(stream.url);
+                    uniqueStreams.push(stream);
+                }
+            });
+
+            // Sort by quality (highest first)
+            uniqueStreams.sort(function(a, b) {
+                const qualityOrder = {
+                    'Adaptive': 4000,
+                    '2160p': 2160, '4K': 2160,
+                    '1440p': 1440,
+                    '1080p': 1080,
+                    '720p': 720,
+                    '480p': 480,
+                    '360p': 360,
+                    'Unknown': 0
+                };
+                return (qualityOrder[b.quality] || 0) - (qualityOrder[a.quality] || 0);
+            });
+
+            console.log(`[Videasy] Total unique streams: ${uniqueStreams.length}`);
+            return uniqueStreams;
+        });
+    }).catch(function(error) {
+        console.error(`[Videasy] Error: ${error.message}`);
+        return [];
+    });
 }
-function getStreams(tmdbIdOrMedia, mediaType = "movie", season = null, episode = null) {
-  return __async(this, null, function* () {
-    try {
-      let tmdbId;
-      let type;
-      let s;
-      let e;
-      if (typeof tmdbIdOrMedia === "object" && tmdbIdOrMedia !== null) {
-        tmdbId = tmdbIdOrMedia.tmdb_id || tmdbIdOrMedia.tmdbId;
-        type = tmdbIdOrMedia.type || tmdbIdOrMedia.mediaType || "movie";
-        s = tmdbIdOrMedia.season;
-        e = tmdbIdOrMedia.episode;
-      } else {
-        tmdbId = tmdbIdOrMedia;
-        type = mediaType;
-        s = season;
-        e = episode;
-      }
-      const normalizedMediaType = type === "series" ? "tv" : type;
-      const normalizedSeason = s == null ? null : parseInt(s, 10);
-      const normalizedEpisode = e == null ? null : parseInt(e, 10);
-      const media = yield fetchMediaDetails(tmdbId, normalizedMediaType);
-      const results = yield Promise.all(
-        SERVERS.map((server) => fetchFromServer(server, media, normalizedSeason, normalizedEpisode))
-      );
-      return sortStreams(dedupeStreams(flattenResults(results)));
-    } catch (_error) {
-      return [];
-    }
-  });
+
+// Export the main function
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { getStreams };
+} else {
+    global.getStreams = getStreams;
 }
-module.exports = { getStreams };
