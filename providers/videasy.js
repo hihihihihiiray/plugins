@@ -150,7 +150,7 @@ function createStream(source, server, media) {
   const quality = normalizeQuality(source.quality);
   const title = media.year ? `${media.title} (${media.year})` : media.title;
   return {
-    name: `Fmovies ${server.name} (${server.language}) - ${quality}`,
+    name: `VidEasy ${server.name} - ${quality}`,
     title,
     url: source.url,
     quality,
