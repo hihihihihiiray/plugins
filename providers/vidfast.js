@@ -11,8 +11,7 @@ const ENCRYPT_API = 'https://enc-dec.app/api/enc-vidfast';
 const VERSION = "1";
 
 const HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36',
-    'Origin': 'https://vidfast.pro'
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36',
     'Referer': 'https://vidfast.pro/',
     'X-Requested-With': 'XMLHttpRequest'
 };
@@ -118,8 +117,8 @@ function fetchServerStream(serverData, streamBaseUrl, token, mediaInfo) {
                 quality: quality,
                 headers: {
                     'User-Agent': HEADERS['User-Agent'],
-                    'Origin': HEADERS['Origin'],
-                    'Referer': HEADERS['Referer']
+                    'Origin': 'https://vidfast.pro'
+                    'Referer': 'https://vidfast.pro/'
                 },
                 provider: 'vidfast'
             };
