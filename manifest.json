@@ -196,28 +196,6 @@
         "en"
       ]
     },
-    { 
-      "id": "vidfast",
-      "name": "VidFast",
-      "description": "VidFast streaming with high-quality links and quick load times (~3s)",
-      "version": "1.0",
-      "author": "raymondnoodles",
-      "supportedTypes": [
-        "movie",
-        "tv",
-        "anime"
-      ],
-      "filename": "providers/vidfast.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "mkv"
-      ],
-      "logo": "https://www.vidfast.net/favicon.ico",
-      "contentLanguage": [
-        "en"
-      ]
-    },
     {
       "id": "animekai",
       "name": "AnimeKai",
