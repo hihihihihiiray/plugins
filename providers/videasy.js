@@ -179,7 +179,6 @@ function dedupeStreams(streams) {
     return true;
   });
 }
-function sortStreams(streams) {
   function sortStreams(streams) {
   const rank = (quality) => {
     if (!quality) return 0;
@@ -205,8 +204,7 @@ function sortStreams(streams) {
 
   return [...streams].sort((a, b) => rank(b.quality) - rank(a.quality));
 }
-  return [...streams].sort((left, right) => rank(right.quality) - rank(left.quality));
-}
+  
 function flattenResults(results) {
   return results.reduce((all, item) => all.concat(item || []), []);
 }
