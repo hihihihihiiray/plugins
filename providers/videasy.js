@@ -1,6 +1,5 @@
-// VidEasy Scraper for Nuvio Local Scrapers
+// VidEasy Scraper for Nuvio Local Scrapers by D3adlyRocket
 // React Native compatible version
-// English servers only (for improved fetching times)
 
 var __defProp = Object.defineProperty;
 var __defProps = Object.defineProperties;
@@ -62,14 +61,14 @@ var PLAYBACK_HEADERS = {
 };
 var SERVERS = [
   {
-    name: "Yoru",
-    language: "Original",
-    url: "https://api.videasy.net/cdn/sources-with-title"
-  },
-  {
     name: "Neon",
     language: "Original",
     url: "https://api.videasy.net/myflixerzupcloud/sources-with-title"
+  },
+  {
+    name: "Yoru",
+    language: "Original",
+    url: "https://api.videasy.net/cdn/sources-with-title"
   }
 ];
 function getJson(url) {
@@ -181,16 +180,31 @@ function dedupeStreams(streams) {
   });
 }
 function sortStreams(streams) {
+  function sortStreams(streams) {
   const rank = (quality) => {
-    const match = String(quality || "").match(/(\d{3,4})/);
+    if (!quality) return 0;
+
+    const q = String(quality).toLowerCase();
+
+    // Explicit 4K detection
+    if (q.includes("4k") || q.includes("2160")) return 2160;
+
+    // Extract numeric resolution (e.g., 1080p, 720p)
+    const match = q.match(/(\d{3,4})/);
     if (match) {
       return parseInt(match[1], 10);
     }
-    if (/adaptive/i.test(String(quality || ""))) {
-      return 9999;
+
+    // Adaptive streams should be BELOW real resolutions
+    if (q.includes("adaptive") || q.includes("auto")) {
+      return 1;
     }
+
     return 0;
   };
+
+  return [...streams].sort((a, b) => rank(b.quality) - rank(a.quality));
+}
   return [...streams].sort((left, right) => rank(right.quality) - rank(left.quality));
 }
 function flattenResults(results) {
