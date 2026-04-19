@@ -11,15 +11,14 @@ const DECRYPT_API = 'https://enc-dec.app/api/dec-videasy';
 const HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36',
     'Accept': '*/*',
-    'Origin': 'https://fmovies.gd',
-    'Referer': 'https://fmovies.gd/'
+    'Origin': 'https://cineby.sc',
+    'Referer': 'https://cineby.sc/'
 };
 
 // Server configurations
 const SERVERS = {
     'Neon': { url: 'https://api.videasy.net/myflixerzupcloud/sources-with-title', language: 'Original' },
     'Yoru': { url: 'https://api.videasy.net/cdn/sources-with-title', language: 'Original', moviesOnly: true },
-    'Cypher': { url: 'https://api.videasy.net/moviebox/sources-with-title', language: 'Original' },
 };
 
 // Helper function to make HTTP requests
