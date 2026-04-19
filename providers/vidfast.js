@@ -11,7 +11,7 @@ const ENCRYPT_API = 'https://enc-dec.app/api/enc-vidfast';
 const VERSION = "1";
 
 const HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36',
     'Referer': 'https://vidfast.pro/',
     'X-Requested-With': 'XMLHttpRequest'
 };
@@ -76,7 +76,7 @@ function extractQuality(data) {
     const url = data.url || '';
     
     // Check URL for quality
-    if (/2160|4k/i.test(url)) return '2160p';
+    if (/2160|4k/i.test(url)) return '4K';
     if (/1440/i.test(url)) return '1440p';
     if (/1080/i.test(url)) return '1080p';
     if (/720/i.test(url)) return '720p';
