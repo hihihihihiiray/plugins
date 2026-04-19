@@ -1,6 +1,5 @@
 // VidEasy Scraper for Nuvio Local Scrapers
 // React Native compatible version
-// English servers only (for improved fetching times)
 
 console.log('[Videasy] Initializing Videasy scraper');
 
@@ -105,45 +104,23 @@ function buildServerUrl(serverConfig, mediaInfo, tmdbId, seasonNum, episodeNum) 
     return `${serverConfig.url}?${queryString}`;
 }
 
+// Extract quality from URL or source data
 function extractQuality(source) {
-    let quality = (source.quality || '').toLowerCase();
-    const url = (source.url || '').toLowerCase();
+    let quality = source.quality || 'Unknown';
 
-    // 🎯 Direct 4K detection (strong match)
-    if (
-        /2160p|4k|uhd/.test(quality) ||
-        /2160p|4k|uhd/.test(url)
-    ) {
-        return '2160p'; // normalize to one label
+    // Check if it's a resolution
+    if (/^\d{3,4}p?$/i.test(quality)) {
+        return quality.toUpperCase().replace(/P$/i, 'p');
     }
 
-    // 1440p
-    if (/1440p/.test(quality) || /1440p/.test(url)) {
-        return '1440p';
-    }
+    // Try to extract from URL
+    const urlMatch = source.url.match(/(\d{3,4})[pP]/);
+    if (urlMatch) return urlMatch[1] + 'p';
 
-    // 1080p
-    if (/1080p|fullhd|fhd/.test(quality) || /1080p/.test(url)) {
-        return '1080p';
-    }
-
-    // 720p
-    if (/720p|hd/.test(quality) || /720p/.test(url)) {
-        return '720p';
-    }
-
-    // 480p
-    if (/480p|sd/.test(quality) || /480p/.test(url)) {
-        return '480p';
-    }
-
-    // Generic numeric fallback (e.g. "360p", "1080")
-    const match = url.match(/(\d{3,4})p?/);
-    if (match) {
-        return match[1] + 'p';
-    }
-
-    if (/adaptive|auto/.test(quality)) return 'Adaptive';
+    // Handle generic quality names
+    if (/adaptive|auto/i.test(quality)) return 'Auto';
+    if (/hd|high/i.test(quality)) return '720p';
+    if (/sd|standard/i.test(quality)) return '480p';
 
     return 'Unknown';
 }
