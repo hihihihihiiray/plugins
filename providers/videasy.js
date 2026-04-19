@@ -19,7 +19,6 @@ const HEADERS = {
 const SERVERS = {
     'Neon': { url: 'https://api.videasy.net/myflixerzupcloud/sources-with-title', language: 'Original' },
     'Yoru': { url: 'https://api.videasy.net/cdn/sources-with-title', language: 'Original', moviesOnly: true },
-};
 
 // Helper function to make HTTP requests
 function makeRequest(url, options = {}) {
@@ -113,6 +112,9 @@ function extractQuality(source) {
         return quality.toUpperCase().replace(/P$/i, 'p');
     }
 
+    // Handle 4K explicitly
+    if (/4k/i.test(quality)) return '4K';
+
     // Try to extract from URL
     const urlMatch = source.url.match(/(\d{3,4})[pP]/);
     if (urlMatch) return urlMatch[1] + 'p';
@@ -148,7 +150,13 @@ function fetchFromServer(serverName, serverConfig, mediaInfo, tmdbId, seasonNum,
             return [];
         }
 
-        const streams = decrypted.sources.map(function(source) {
+        // Filter out HDR sources (they may cause playback issues)
+        const nonHDRSources = decrypted.sources.filter(function(source) {
+            const quality = source.quality || '';
+            return !quality.toUpperCase().includes('HDR');
+        });
+
+        const streams = nonHDRSources.map(function(source) {
             const quality = extractQuality(source);
             const streamName = `VidEasy ${serverName} - ${quality}`;
 
@@ -159,8 +167,8 @@ function fetchFromServer(serverName, serverConfig, mediaInfo, tmdbId, seasonNum,
                 quality: quality,
                 headers: {
                     'User-Agent': HEADERS['User-Agent'],
-                    'Referer': HEADERS['Referer'],
-                    'Origin': HEADERS['Origin']
+                    'Origin': 'https://cineby.sc',
+                    'Referer': 'https://cineby.sc/'
                 },
                 provider: 'videasy'
             };
