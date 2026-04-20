@@ -38,7 +38,7 @@ A curated collection of the best high-quality scrapers compiled for the Nuvio st
 - For DMCA concerns, contact the actual content hosts.
 
 
-This repository is a personal collection of public plugins made by other people for my own use. I am in no way affiliated with Nuvio or any of the listed providers. This repository is strictly for educational purposes only.
+This repository is a personal collection of public plugins made by other people for my own use, and is strictly for **educational purposes only**. I am in no way affiliated with Nuvio or any of the listed providers.
 
 
 ## Credits
