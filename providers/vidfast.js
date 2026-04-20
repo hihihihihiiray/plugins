@@ -39,6 +39,7 @@ async function scrapeVidFast(tmdbId, mediaInfo, seasonNum, episodeNum) {
         const headers = {
             'Accept': '*/*',
             'Accept-Language': 'en-US,en;q=0.9',
+            'Accept-Encoding': 'gzip, deflate, br, zstd',
             'Connection': 'keep-alive',
             'Origin': 'https://vidfast.pro',
             'Referer': pageUrl,
