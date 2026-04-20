@@ -18,7 +18,7 @@ const HEADERS = {
 // Server configurations
 const SERVERS = {
     'Neon': { url: 'https://api.videasy.net/myflixerzupcloud/sources-with-title', language: 'Original' },
-    'Yoru': { url: 'https://api.videasy.net/cdn/sources-with-title', language: 'Original' },
+    'Yoru': { url: 'https://api.videasy.net/cdn/sources-with-title', language: 'Original', moviesOnly: true },
 };
 
 // Helper function to make HTTP requests
@@ -129,7 +129,13 @@ function extractQuality(source) {
 }
 
 // Fetch from a single server
-function fetchFromServer(serverName, serverConfig, mediaInfo, tmdbId, seasonNum, episodeNum) {
+function fetchFromServer(serverName, serverConfig, mediaInfo, tmdbId, seasonNum, episodeNum) 
+{
+    
+    // Skip movie-only servers for TV shows
+    if (mediaInfo.mediaType === 'tv' && serverConfig.moviesOnly) {
+        console.log(`[Videasy] Skipping ${serverName} - movies only`);
+        return Promise.resolve([]);
 
     }
 
