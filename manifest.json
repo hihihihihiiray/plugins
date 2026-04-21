@@ -206,7 +206,7 @@
         "movie",
         "tv"
       ],
-      "filename": "providers/vidfasts.js",
+      "filename": "providers/vidfast.js",
       "enabled": true,
       "formats": [
         "mp4",
