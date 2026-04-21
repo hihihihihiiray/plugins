@@ -15,7 +15,7 @@ const DECRYPT_API = 'https://enc-dec.app/api/dec-vidfast';
 const ALLOWED_SERVERS = ['Alpha', 'Cobra', 'Kirito', 'Max', 'Meliodas', 'Oscar', 'vEdge', 'vFast', 'vRapid'];
 
 // Exclude specific servers 
-const BLOCKED_SERVERS = ['Beta', 'Iron', 'Viper', 'Specter', 'Ranger', 'Echo', 'Charlie', 'Vodka', 'Pablo', 'Loco', 'Samba', 'Bollywood' ];
+const BLOCKED_SERVERS = ['Beta', 'Iron', 'Viper', 'Specter', 'Ranger', 'Echo', 'Charlie', 'Vodka', 'Pablo', 'Loco', 'Samba', 'Bollywood'];
 
 // Get TMDB details
 function getTMDBDetails(tmdbId, mediaType) {
