@@ -5,7 +5,7 @@
     { 
       "id": "showbox",
       "name": "ShowBox",
-      "description": "ShowBox streaming with multiple quality options and versions (~3s)",
+      "description": "ShowBox streaming with multiple quality options and versions (~4s)",
       "version": "2.0",
       "author": "Nuvio Team",
       "supportedTypes": [
@@ -199,8 +199,8 @@
     { 
       "id": "vidfast",
       "name": "VidFast",
-      "description": "VidFast streaming with high-quality links and quick load times",
-      "version": "1.0",
+      "description": "VidFast streaming with high-quality links and quick load times (~6s)",
+      "version": "2.0",
       "author": "raymondnoodles",
       "supportedTypes": [
         "movie",
