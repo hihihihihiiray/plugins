@@ -9,13 +9,77 @@ const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 const VIDFAST_BASE = 'https://vidfast.pro';
 const ENCRYPT_API = 'https://enc-dec.app/api/enc-vidfast';
 const DECRYPT_API = 'https://enc-dec.app/api/dec-vidfast';
-
-
-// Filter by server names
 const ALLOWED_SERVERS = ['Alpha', 'Cobra', 'Kirito', 'Max', 'Meliodas', 'Oscar', 'vEdge', 'vFast', 'vRapid'];
-
-// Exclude specific servers 
 const BLOCKED_SERVERS = ['Beta', 'Iron', 'Viper', 'Specter', 'Ranger', 'Echo', 'Charlie', 'Vodka', 'Pablo', 'Loco', 'Samba', 'Bollywood'];
+
+
+// Parse HLS master playlist to extract quality variants
+async function parseM3U8Playlist(playlistUrl) {
+    try {
+        const response = await fetch(playlistUrl, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                'Referer': 'https://vidfast.pro/'
+            }
+        });
+        
+        if (!response.ok) return null;
+        
+        const playlistText = await response.text();
+        
+        // Check if it's a master playlist (contains #EXT-X-STREAM-INF)
+        if (!playlistText.includes('#EXT-X-STREAM-INF')) {
+            return null; // Not a master playlist, it's a single quality stream
+        }
+        
+        const variants = [];
+        const lines = playlistText.split('\n');
+        
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i].trim();
+            
+            if (line.startsWith('#EXT-X-STREAM-INF')) {
+                // Extract resolution
+                const resolutionMatch = line.match(/RESOLUTION=(\d+)x(\d+)/i);
+                const bandwidthMatch = line.match(/BANDWIDTH=(\d+)/i);
+                
+                // Next line should be the URL
+                const urlLine = lines[i + 1]?.trim();
+                if (!urlLine || urlLine.startsWith('#')) continue;
+                
+                // Build full URL if relative
+                let variantUrl = urlLine;
+                if (!urlLine.startsWith('http')) {
+                    const baseUrl = playlistUrl.substring(0, playlistUrl.lastIndexOf('/') + 1);
+                    variantUrl = baseUrl + urlLine;
+                }
+                
+                // Determine quality from resolution
+                let quality = 'Unknown';
+                if (resolutionMatch) {
+                    const height = parseInt(resolutionMatch[2]);
+                    if (height >= 2160) quality = '2160p';
+                    else if (height >= 1440) quality = '1440p';
+                    else if (height >= 1080) quality = '1080p';
+                    else if (height >= 720) quality = '720p';
+                    else if (height >= 480) quality = '480p';
+                    else if (height >= 360) quality = '360p';
+                    else quality = `${height}p`;
+                }
+                
+                variants.push({
+                    url: variantUrl,
+                    quality: quality,
+                    bandwidth: bandwidthMatch ? parseInt(bandwidthMatch[1]) : 0
+                });
+            }
+        }
+        
+        return variants.length > 0 ? variants : null;
+    } catch (error) {
+        return null;
+    }
+}
 
 // Get TMDB details
 function getTMDBDetails(tmdbId, mediaType) {
@@ -221,7 +285,7 @@ async function scrapeVidFast(tmdbId, mediaInfo, seasonNum, episodeNum) {
                     else if (/720/i.test(quality)) quality = '720p';
                     else if (/480/i.test(quality)) quality = '480p';
                     else if (/360/i.test(quality)) quality = '360p';
-                    else if (/auto|adaptive/i.test(quality)) quality = 'Auto';
+                    else if (/auto|adaptive/i.test(quality)) quality = 'Adaptive';
                 } else if (data.label) {
                     // Some APIs use "label" instead of "quality"
                     quality = data.label;
@@ -231,24 +295,48 @@ async function scrapeVidFast(tmdbId, mediaInfo, seasonNum, episodeNum) {
                     else if (/720/i.test(quality)) quality = '720p';
                     else if (/480/i.test(quality)) quality = '480p';
                     else if (/360/i.test(quality)) quality = '360p';
-                    else if (/auto|adaptive/i.test(quality)) quality = 'Auto';
+                    else if (/auto|adaptive/i.test(quality)) quality = 'Adaptive';
                 } else {
                     // Try to extract from URL path or query params
                     const qualityMatch = data.url.match(/(\d{3,4})[pP]/);
                     if (qualityMatch) {
                         quality = `${qualityMatch[1]}p`;
                     } else if (data.url.includes('.m3u8')) {
-                        quality = 'Auto';
+                        quality = 'Adaptive';
                     }
                 }
 
+                // If it's an m3u8, try to parse it for quality variants
+                if (data.url.includes('.m3u8')) {
+                    const variants = await parseM3U8Playlist(data.url);
+                    
+                    if (variants && variants.length > 0) {
+                        // Add each quality variant as a separate stream
+                        variants.forEach(function(variant) {
+                            streams.push({
+                                name: `VidFast ${serverName} - ${variant.quality}`,
+                                title: `${mediaInfo.title} (${mediaInfo.year})`,
+                                url: variant.url,
+                                quality: variant.quality,
+                                headers: {
+                                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                                    'Referer': 'https://vidfast.pro/'
+                                },
+                                provider: 'vidfast'
+                            });
+                        });
+                        continue; // Skip the master playlist, we added the variants
+                    }
+                }
+
+                // Single stream (not a master playlist or parsing failed)
                 streams.push({
                     name: `VidFast ${serverName} - ${quality}`,
                     title: `${mediaInfo.title} (${mediaInfo.year})`,
                     url: data.url,
                     quality: quality,
                     headers: {
-                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36',
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
                         'Referer': 'https://vidfast.pro/'
                     },
                     provider: 'vidfast'
