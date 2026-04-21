@@ -11,15 +11,11 @@ const ENCRYPT_API = 'https://enc-dec.app/api/enc-vidfast';
 const DECRYPT_API = 'https://enc-dec.app/api/dec-vidfast';
 
 
-// Filter by server names (if applied)
-// ex. const ALLOWED_SERVERS = ['Server1', 'Server2'];
+// Filter by server names
+const ALLOWED_SERVERS = ['Alpha', 'Cobra', 'Kirito', 'Max', 'Meliodas', 'Oscar', 'vEdge', 'vFast', 'vRapid'];
 
-// Filter by description if applied (e.g., only original audio)
-const FILTER_DESCRIPTION = 'Original audio';
-
-// Exclude specific servers (if applied)
-// ex. const BLOCKED_SERVERS = ['Server3', 'Server4'];
-const BLOCKED_SERVERS = ['Beta', 'Iron', 'Viper', 'Specter', 'Ranger', 'Echo', 'Charlie'];
+// Exclude specific servers 
+const BLOCKED_SERVERS = ['Beta', 'Iron', 'Viper', 'Specter', 'Ranger', 'Echo', 'Charlie', 'Vodka', 'Pablo', 'Loco', 'Samba', 'Bollywood' ];
 
 // Get TMDB details
 function getTMDBDetails(tmdbId, mediaType) {
@@ -225,7 +221,7 @@ async function scrapeVidFast(tmdbId, mediaInfo, seasonNum, episodeNum) {
                     else if (/720/i.test(quality)) quality = '720p';
                     else if (/480/i.test(quality)) quality = '480p';
                     else if (/360/i.test(quality)) quality = '360p';
-                    else if (/auto|adaptive/i.test(quality)) quality = 'Adaptive';
+                    else if (/auto|adaptive/i.test(quality)) quality = 'Auto';
                 } else if (data.label) {
                     // Some APIs use "label" instead of "quality"
                     quality = data.label;
@@ -235,7 +231,7 @@ async function scrapeVidFast(tmdbId, mediaInfo, seasonNum, episodeNum) {
                     else if (/720/i.test(quality)) quality = '720p';
                     else if (/480/i.test(quality)) quality = '480p';
                     else if (/360/i.test(quality)) quality = '360p';
-                    else if (/auto|adaptive/i.test(quality)) quality = 'Adaptive';
+                    else if (/auto|adaptive/i.test(quality)) quality = 'Auto';
                 } else {
                     // Try to extract from URL path or query params
                     const qualityMatch = data.url.match(/(\d{3,4})[pP]/);
