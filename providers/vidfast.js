@@ -178,12 +178,38 @@ async function scrapeVidFast(tmdbId, mediaInfo, seasonNum, episodeNum) {
                     continue;
                 }
 
-                // Determine quality from URL
+                // Determine quality - check response data first, then URL
                 let quality = 'Unknown';
-                if (data.url.includes('.m3u8')) quality = 'Adaptive';
-                else {
+                
+                // Check if quality/label exists in response
+                if (data.quality) {
+                    quality = data.quality;
+                    // Normalize quality strings
+                    if (/2160|4k/i.test(quality)) quality = '2160p';
+                    else if (/1440/i.test(quality)) quality = '1440p';
+                    else if (/1080/i.test(quality)) quality = '1080p';
+                    else if (/720/i.test(quality)) quality = '720p';
+                    else if (/480/i.test(quality)) quality = '480p';
+                    else if (/360/i.test(quality)) quality = '360p';
+                    else if (/auto|adaptive/i.test(quality)) quality = 'Adaptive';
+                } else if (data.label) {
+                    // Some APIs use "label" instead of "quality"
+                    quality = data.label;
+                    if (/2160|4k/i.test(quality)) quality = '2160p';
+                    else if (/1440/i.test(quality)) quality = '1440p';
+                    else if (/1080/i.test(quality)) quality = '1080p';
+                    else if (/720/i.test(quality)) quality = '720p';
+                    else if (/480/i.test(quality)) quality = '480p';
+                    else if (/360/i.test(quality)) quality = '360p';
+                    else if (/auto|adaptive/i.test(quality)) quality = 'Adaptive';
+                } else {
+                    // Try to extract from URL path or query params
                     const qualityMatch = data.url.match(/(\d{3,4})[pP]/);
-                    if (qualityMatch) quality = `${qualityMatch[1]}p`;
+                    if (qualityMatch) {
+                        quality = `${qualityMatch[1]}p`;
+                    } else if (data.url.includes('.m3u8')) {
+                        quality = 'Adaptive';
+                    }
                 }
 
                 streams.push({
