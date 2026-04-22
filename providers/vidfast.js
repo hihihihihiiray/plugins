@@ -101,7 +101,7 @@ async function parseM3U8Playlist(playlistUrl) {
                 
                 variants.push({
                     url: variantUrl,
-                    quality: quality,
+                    quality: m3u8quality,
                     bandwidth: bandwidthMatch ? parseInt(bandwidthMatch[1]) : 0
                 });
             }
@@ -383,7 +383,7 @@ async function scrapeVidFast(tmdbId, mediaInfo, seasonNum, episodeNum) {
         // Step 7: Build final stream objects
         const streams = allParsedStreams.map(function(stream) {
             return {
-                name: `VidFast ${stream.serverName} - ${stream.quality}`,
+                name: `VidFast ${stream.serverName} - ${m3u8quality}`,
                 title: `${mediaInfo.title} (${mediaInfo.year})`,
                 url: stream.url,
                 quality: stream.quality,
