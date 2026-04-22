@@ -9,29 +9,50 @@ const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 const VIDFAST_BASE = 'https://vidfast.pro';
 const ENCRYPT_API = 'https://enc-dec.app/api/enc-vidfast';
 const DECRYPT_API = 'https://enc-dec.app/api/dec-vidfast';
-const ALLOWED_SERVERS = ['Alpha', 'Cobra', 'Max', 'Oscar', 'vEdge', 'vFast', 'vRapid'];
+
+// Server filtering (uncomment one option or leave all commented to allow all)
+// Option 1: Filter by server names
+// const ALLOWED_SERVERS = ['vEdge', 'vRapid'];
+
+// Option 2: Filter by description (e.g., only original audio)
+const FILTER_DESCRIPTION = 'Original audio';
+
+// Option 3: Exclude specific servers
+// const BLOCKED_SERVERS = ['vSlow', 'vBad'];
 
 // Parse HLS master playlist to extract quality variants
 async function parseM3U8Playlist(playlistUrl) {
+    console.log(`[VidFast] Fetching m3u8 playlist: ${playlistUrl.substring(0, 80)}...`);
+    
     try {
         const response = await fetch(playlistUrl, {
             headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
                 'Referer': 'https://vidfast.pro/'
             }
         });
         
-        if (!response.ok) return null;
+        if (!response.ok) {
+            console.log(`[VidFast] Playlist fetch failed: HTTP ${response.status}`);
+            return null;
+        }
         
         const playlistText = await response.text();
+        console.log(`[VidFast] Playlist text length: ${playlistText.length}`);
+        console.log(`[VidFast] Playlist first 300 chars: ${playlistText.substring(0, 300)}`);
         
         // Check if it's a master playlist (contains #EXT-X-STREAM-INF)
-        if (!playlistText.includes('#EXT-X-STREAM-INF')) {
+        const isMasterPlaylist = playlistText.includes('#EXT-X-STREAM-INF');
+        console.log(`[VidFast] Is master playlist: ${isMasterPlaylist}`);
+        
+        if (!isMasterPlaylist) {
+            console.log('[VidFast] Not a master playlist, skipping variant extraction');
             return null; // Not a master playlist, it's a single quality stream
         }
         
         const variants = [];
         const lines = playlistText.split('\n');
+        console.log(`[VidFast] Parsing ${lines.length} lines...`);
         
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i].trim();
@@ -41,15 +62,26 @@ async function parseM3U8Playlist(playlistUrl) {
                 const resolutionMatch = line.match(/RESOLUTION=(\d+)x(\d+)/i);
                 const bandwidthMatch = line.match(/BANDWIDTH=(\d+)/i);
                 
+                console.log(`[VidFast] Found stream info line: ${line.substring(0, 100)}`);
+                if (resolutionMatch) {
+                    console.log(`[VidFast] Resolution: ${resolutionMatch[1]}x${resolutionMatch[2]}`);
+                }
+                
                 // Next line should be the URL
                 const urlLine = lines[i + 1]?.trim();
-                if (!urlLine || urlLine.startsWith('#')) continue;
+                if (!urlLine || urlLine.startsWith('#')) {
+                    console.log(`[VidFast] No valid URL line found after stream info`);
+                    continue;
+                }
+                
+                console.log(`[VidFast] Variant URL: ${urlLine.substring(0, 80)}...`);
                 
                 // Build full URL if relative
                 let variantUrl = urlLine;
                 if (!urlLine.startsWith('http')) {
                     const baseUrl = playlistUrl.substring(0, playlistUrl.lastIndexOf('/') + 1);
                     variantUrl = baseUrl + urlLine;
+                    console.log(`[VidFast] Built full URL from relative path`);
                 }
                 
                 // Determine quality from resolution
@@ -65,6 +97,8 @@ async function parseM3U8Playlist(playlistUrl) {
                     else quality = `${height}p`;
                 }
                 
+                console.log(`[VidFast] Detected quality: ${quality}`);
+                
                 variants.push({
                     url: variantUrl,
                     quality: quality,
@@ -73,8 +107,14 @@ async function parseM3U8Playlist(playlistUrl) {
             }
         }
         
+        console.log(`[VidFast] Extracted ${variants.length} quality variants`);
+        if (variants.length > 0) {
+            console.log(`[VidFast] Qualities found: ${variants.map(v => v.quality).join(', ')}`);
+        }
+        
         return variants.length > 0 ? variants : null;
     } catch (error) {
+        console.log(`[VidFast] Playlist parsing error: ${error.message}`);
         return null;
     }
 }
@@ -275,24 +315,24 @@ async function scrapeVidFast(tmdbId, mediaInfo, seasonNum, episodeNum) {
                 
                 if (data.quality) {
                     quality = data.quality;
-                    if (/2160|4k/i.test(quality)) quality = '4K';
+                    if (/2160|4k/i.test(quality)) quality = '2160p';
                     else if (/1440/i.test(quality)) quality = '1440p';
                     else if (/1080/i.test(quality)) quality = '1080p';
                     else if (/720/i.test(quality)) quality = '720p';
                     else if (/480/i.test(quality)) quality = '480p';
                     else if (/360/i.test(quality)) quality = '360p';
-                    else if (/auto|adaptive/i.test(quality)) quality = 'Auto';
+                    else if (/auto|adaptive/i.test(quality)) quality = 'Adaptive';
                 } else if (data.label) {
                     quality = data.label;
-                    if (/2160|4k/i.test(quality)) quality = '4K';
+                    if (/2160|4k/i.test(quality)) quality = '2160p';
                     else if (/1440/i.test(quality)) quality = '1440p';
                     else if (/1080/i.test(quality)) quality = '1080p';
                     else if (/720/i.test(quality)) quality = '720p';
                     else if (/480/i.test(quality)) quality = '480p';
                     else if (/360/i.test(quality)) quality = '360p';
-                    else if (/auto|adaptive/i.test(quality)) quality = 'Auto';
+                    else if (/auto|adaptive/i.test(quality)) quality = 'Adaptive';
                 } else if (data.url.includes('.m3u8')) {
-                    quality = 'Auto';
+                    quality = 'Adaptive';
                 } else {
                     const qualityMatch = data.url.match(/(\d{3,4})[pP]/);
                     if (qualityMatch) quality = `${qualityMatch[1]}p`;
@@ -310,13 +350,19 @@ async function scrapeVidFast(tmdbId, mediaInfo, seasonNum, episodeNum) {
         }
 
         // Step 6: Parse m3u8 playlists in parallel
+        const m3u8Count = rawStreams.filter(s => s.isM3U8).length;
+        console.log(`[VidFast] Found ${rawStreams.length} raw streams (${m3u8Count} are m3u8)`);
+        
         const parsePromises = rawStreams.map(async function(stream) {
             if (!stream.isM3U8) {
                 return [stream]; // Return as single-item array for consistency
             }
             
+            console.log(`[VidFast] Parsing m3u8 for ${stream.serverName}...`);
             const variants = await parseM3U8Playlist(stream.url);
+            
             if (variants && variants.length > 0) {
+                console.log(`[VidFast] ${stream.serverName}: Extracted ${variants.length} quality variants`);
                 return variants.map(v => ({
                     serverName: stream.serverName,
                     url: v.url,
@@ -324,11 +370,15 @@ async function scrapeVidFast(tmdbId, mediaInfo, seasonNum, episodeNum) {
                     isM3U8: false
                 }));
             }
+            
+            console.log(`[VidFast] ${stream.serverName}: No variants found, using original stream`);
             return [stream]; // Fallback to original
         });
 
         const parsedStreamArrays = await Promise.all(parsePromises);
         const allParsedStreams = parsedStreamArrays.flat();
+        
+        console.log(`[VidFast] After parsing: ${allParsedStreams.length} total streams`);
 
         // Step 7: Build final stream objects
         const streams = allParsedStreams.map(function(stream) {
