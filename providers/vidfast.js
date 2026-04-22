@@ -16,7 +16,7 @@ async function parseM3U8Playlist(playlistUrl) {
     try {
         const response = await fetch(playlistUrl, {
             headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36',
                 'Referer': 'https://vidfast.pro/'
             }
         });
@@ -275,22 +275,22 @@ async function scrapeVidFast(tmdbId, mediaInfo, seasonNum, episodeNum) {
                 
                 if (data.quality) {
                     quality = data.quality;
-                    if (/2160|4k/i.test(quality)) quality = '2160p';
+                    if (/2160|4k/i.test(quality)) quality = '4K';
                     else if (/1440/i.test(quality)) quality = '1440p';
                     else if (/1080/i.test(quality)) quality = '1080p';
                     else if (/720/i.test(quality)) quality = '720p';
                     else if (/480/i.test(quality)) quality = '480p';
                     else if (/360/i.test(quality)) quality = '360p';
-                    else if (/auto|adaptive/i.test(quality)) quality = 'Adaptive';
+                    else if (/auto|adaptive/i.test(quality)) quality = 'Auto';
                 } else if (data.label) {
                     quality = data.label;
-                    if (/2160|4k/i.test(quality)) quality = '2160p';
+                    if (/2160|4k/i.test(quality)) quality = '4K';
                     else if (/1440/i.test(quality)) quality = '1440p';
                     else if (/1080/i.test(quality)) quality = '1080p';
                     else if (/720/i.test(quality)) quality = '720p';
                     else if (/480/i.test(quality)) quality = '480p';
                     else if (/360/i.test(quality)) quality = '360p';
-                    else if (/auto|adaptive/i.test(quality)) quality = 'Adaptive';
+                    else if (/auto|adaptive/i.test(quality)) quality = 'Auto';
                 } else if (data.url.includes('.m3u8')) {
                     quality = 'Adaptive';
                 } else {
