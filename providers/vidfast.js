@@ -11,7 +11,6 @@ const ENCRYPT_API = 'https://enc-dec.app/api/enc-vidfast';
 const DECRYPT_API = 'https://enc-dec.app/api/dec-vidfast';
 const ALLOWED_SERVERS = ['Alpha', 'Cobra', 'Max', 'Oscar', 'vEdge', 'vFast', 'vRapid'];
 
-
 // Parse HLS master playlist to extract quality variants
 async function parseM3U8Playlist(playlistUrl) {
     try {
@@ -239,7 +238,7 @@ async function scrapeVidFast(tmdbId, mediaInfo, seasonNum, episodeNum) {
         console.log(`[VidFast] Found ${serverList.length} server(s)`);
 
         // Step 5: Fetch and decrypt streams from each server
-        const streams = [];
+        const rawStreams = [];
 
         for (let i = 0; i < serverList.length; i++) {
             const serverObj = serverList[i];
@@ -271,13 +270,11 @@ async function scrapeVidFast(tmdbId, mediaInfo, seasonNum, episodeNum) {
                     continue;
                 }
 
-                // Determine quality - check response data first, then URL
+                // Determine quality from response data
                 let quality = 'Unknown';
                 
-                // Check if quality/label exists in response
                 if (data.quality) {
                     quality = data.quality;
-                    // Normalize quality strings
                     if (/2160|4k/i.test(quality)) quality = '2160p';
                     else if (/1440/i.test(quality)) quality = '1440p';
                     else if (/1080/i.test(quality)) quality = '1080p';
@@ -286,7 +283,6 @@ async function scrapeVidFast(tmdbId, mediaInfo, seasonNum, episodeNum) {
                     else if (/360/i.test(quality)) quality = '360p';
                     else if (/auto|adaptive/i.test(quality)) quality = 'Adaptive';
                 } else if (data.label) {
-                    // Some APIs use "label" instead of "quality"
                     quality = data.label;
                     if (/2160|4k/i.test(quality)) quality = '2160p';
                     else if (/1440/i.test(quality)) quality = '1440p';
@@ -295,55 +291,59 @@ async function scrapeVidFast(tmdbId, mediaInfo, seasonNum, episodeNum) {
                     else if (/480/i.test(quality)) quality = '480p';
                     else if (/360/i.test(quality)) quality = '360p';
                     else if (/auto|adaptive/i.test(quality)) quality = 'Adaptive';
+                } else if (data.url.includes('.m3u8')) {
+                    quality = 'Adaptive';
                 } else {
-                    // Try to extract from URL path or query params
                     const qualityMatch = data.url.match(/(\d{3,4})[pP]/);
-                    if (qualityMatch) {
-                        quality = `${qualityMatch[1]}p`;
-                    } else if (data.url.includes('.m3u8')) {
-                        quality = 'Adaptive';
-                    }
+                    if (qualityMatch) quality = `${qualityMatch[1]}p`;
                 }
 
-                // If it's an m3u8, try to parse it for quality variants
-                if (data.url.includes('.m3u8')) {
-                    const variants = await parseM3U8Playlist(data.url);
-                    
-                    if (variants && variants.length > 0) {
-                        // Add each quality variant as a separate stream
-                        variants.forEach(function(variant) {
-                            streams.push({
-                                name: `VidFast ${serverName} - ${variant.quality}`,
-                                title: `${mediaInfo.title} (${mediaInfo.year})`,
-                                url: variant.url,
-                                quality: variant.quality,
-                                headers: {
-                                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                                    'Referer': 'https://vidfast.pro/'
-                                },
-                                provider: 'vidfast'
-                            });
-                        });
-                        continue; // Skip the master playlist, we added the variants
-                    }
-                }
-
-                // Single stream (not a master playlist or parsing failed)
-                streams.push({
-                    name: `VidFast ${serverName} - ${quality}`,
-                    title: `${mediaInfo.title} (${mediaInfo.year})`,
+                rawStreams.push({
+                    serverName: serverName,
                     url: data.url,
                     quality: quality,
-                    headers: {
-                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                        'Referer': 'https://vidfast.pro/'
-                    },
-                    provider: 'vidfast'
+                    isM3U8: data.url.includes('.m3u8')
                 });
             } catch (error) {
                 continue;
             }
         }
+
+        // Step 6: Parse m3u8 playlists in parallel
+        const parsePromises = rawStreams.map(async function(stream) {
+            if (!stream.isM3U8) {
+                return [stream]; // Return as single-item array for consistency
+            }
+            
+            const variants = await parseM3U8Playlist(stream.url);
+            if (variants && variants.length > 0) {
+                return variants.map(v => ({
+                    serverName: stream.serverName,
+                    url: v.url,
+                    quality: v.quality,
+                    isM3U8: false
+                }));
+            }
+            return [stream]; // Fallback to original
+        });
+
+        const parsedStreamArrays = await Promise.all(parsePromises);
+        const allParsedStreams = parsedStreamArrays.flat();
+
+        // Step 7: Build final stream objects
+        const streams = allParsedStreams.map(function(stream) {
+            return {
+                name: `VidFast ${stream.serverName} - ${stream.quality}`,
+                title: `${mediaInfo.title} (${mediaInfo.year})`,
+                url: stream.url,
+                quality: stream.quality,
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                    'Referer': 'https://vidfast.pro/'
+                },
+                provider: 'vidfast'
+            };
+        });
 
         // Deduplicate by URL
         const uniqueStreams = [];
