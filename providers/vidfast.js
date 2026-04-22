@@ -292,7 +292,7 @@ async function scrapeVidFast(tmdbId, mediaInfo, seasonNum, episodeNum) {
                     else if (/360/i.test(quality)) quality = '360p';
                     else if (/auto|adaptive/i.test(quality)) quality = 'Auto';
                 } else if (data.url.includes('.m3u8')) {
-                    quality = 'Adaptive';
+                    quality = 'Auto';
                 } else {
                     const qualityMatch = data.url.match(/(\d{3,4})[pP]/);
                     if (qualityMatch) quality = `${qualityMatch[1]}p`;
