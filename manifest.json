@@ -207,7 +207,7 @@
         "tv"
       ],
       "filename": "providers/vidfast.js",
-      "enabled": false,
+      "enabled": true,
       "formats": [
         "mp4",
         "mkv"
