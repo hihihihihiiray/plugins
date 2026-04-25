@@ -196,27 +196,6 @@
         "en"
       ]
     },
-    { 
-      "id": "vidfast",
-      "name": "VidFast",
-      "description": "VidFast streaming with multi-server support and automatic quality changing (Broken)",
-      "version": "2.0",
-      "author": "raymondnoodles",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/vidfast.js",
-      "enabled": false,
-      "formats": [
-        "mp4",
-        "mkv"
-      ],
-      "logo": "https://www.vidfast.net/favicon.ico",
-      "contentLanguage": [
-        "en"
-      ]
-    },
     {
       "id": "animekai",
       "name": "AnimeKai",
