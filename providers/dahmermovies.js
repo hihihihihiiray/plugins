@@ -339,8 +339,16 @@ async function invokeDahmerMovies(title, year, season = null, episode = null) {
 
     let filteredPaths;
     if (season === null) {
-        filteredPaths = paths.filter(path => /(1080p|2160p)/i.test(path.text));
-        console.log(`[DahmerMovies] Filtered to ${filteredPaths.length} movie links (1080p/2160p only)`);
+        // Try 2160p first
+        filteredPaths = paths.filter(path => /2160p/i.test(path.text));
+        
+        if (filteredPaths.length > 0) {
+            console.log(`[DahmerMovies] Found ${filteredPaths.length} 2160p links, prioritizing those`);
+        } else {
+            // No 2160p found — fall back to 1080p only, take first 4
+            filteredPaths = paths.filter(path => /1080p/i.test(path.text)).slice(0, 4);
+            console.log(`[DahmerMovies] No 2160p found, falling back to first ${filteredPaths.length} 1080p links`);
+        }
     } else {
         const [seasonSlug, episodeSlug] = getEpisodeSlug(season, episode);
         const episodePattern = new RegExp(`S${seasonSlug}E${episodeSlug}`, 'i');
