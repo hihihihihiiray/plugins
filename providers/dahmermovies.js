@@ -9,7 +9,7 @@ const DAHMER_MOVIES_API = 'https://a.111477.xyz';
 const TIMEOUT = 4000; // 4 seconds
 
 const BATCH_SIZE = 2;          // links resolved in parallel per batch
-const BATCH_GAP_MS = 2000;      // gap between batches (only paid when a 429 occurred)
+const BATCH_GAP_MS = 750;      // gap between batches (only paid when a 429 occurred)
 const RETRY_MS = 7500;    // wait on 429 before retrying a single link
 
 // Quality mapping
