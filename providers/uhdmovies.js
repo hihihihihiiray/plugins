@@ -2,9 +2,8 @@
 // React Native compatible version
 
 "use strict";
-
 // src/uhdmovies/index.js
-var DOMAIN = "https://uhdmovies.rip";
+var DOMAIN = "https://uhdmovies.pink";
 var TMDB_API = "https://api.themoviedb.org/3";
 var TMDB_API_KEY = "1c29a5198ee1854bd5eb45dbe8d17d92";
 var USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36";
