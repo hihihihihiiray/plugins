@@ -353,7 +353,7 @@ async function invokeDahmerMovies(title, year, season = null, episode = null) {
         return [];
     }
 
-    const pathsToProcess = filteredPaths.slice(0, 9);
+    const pathsToProcess = filteredPaths.slice(0, 3);
     const results = [];
 
     try {
