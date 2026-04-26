@@ -8,8 +8,8 @@ const TMDB_API_KEY = "1c29a5198ee1854bd5eb45dbe8d17d92";
 const DAHMER_MOVIES_API = 'https://a.111477.xyz';
 const TIMEOUT = 3500; // 3.5 seconds
 
-const BATCH_SIZE = 2;          // links resolved in parallel per batch
-const BATCH_GAP_MS = 750;      // gap between batches (only paid when a 429 occurred)
+const BATCH_SIZE = 4;          // links resolved in parallel per batch
+const BATCH_GAP_MS = 500;      // gap between batches (only paid when a 429 occurred)
 const RETRY_MS = 7500;    // wait on 429 before retrying a single link
 
 // Quality mapping
