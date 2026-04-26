@@ -314,7 +314,7 @@ function getStreams(tmdbId, mediaType, season, episode) {
             extractKwik(kwikUrl).then((res) => {
               if (res) {
                 streams.push({
-                  name: `AnimePahe (${quality} ${type})`,
+                  name: `AnimePahe |${quality} - ${type}|`,
                   title: `${animeTitle} - Episode ${mappedEp}`,
                   url: res.url,
                   quality,
