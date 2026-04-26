@@ -241,7 +241,7 @@
     {
       "id": "animepahe",
       "name": "AnimePahe",
-      "description": "AnimePahe (Sub/Dub)",
+      "description": "AnimePahe streaming links with sub and dub support (~4s)",
       "version": "1.0",
       "author": "Nuvio Team",
       "supportedTypes": [
