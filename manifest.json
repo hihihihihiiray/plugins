@@ -67,7 +67,7 @@
     {
       "id": "dahmermovies",
       "name": "DahmerMovies",
-      "description": "DahmerMovies streaming service. Can be slow to fetch and stream, only use if needed. (~13s)",
+      "description": "DahmerMovies streaming service. Can be slow to fetch and stream, only use if needed. (~20s)",
       "version": "1.4",
       "author": "Nuvio Team",
       "supportedTypes": [
