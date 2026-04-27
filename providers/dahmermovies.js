@@ -10,7 +10,7 @@ const TIMEOUT = 22000; // 22 seconds
 
 const BATCH_SIZE = 3;          // links resolved in parallel per batch
 const BATCH_GAP_MS = 1500;      // gap between batches (only paid when a 429 occurred)
-const RETRY_MS = 7500;    // wait on 429 before retrying a single link
+const RETRY_MS = 8000;    // wait on 429 before retrying a single link
 
 // Quality mapping
 const Qualities = {
@@ -339,7 +339,7 @@ async function invokeDahmerMovies(title, year, season = null, episode = null) {
 
     let filteredPaths;
     if (season === null) {
-        // Try 2160p first
+        // Try 2160p filtering first
         filteredPaths = paths.filter(path => /2160p/i.test(path.text));
         
         if (filteredPaths.length > 0) {
@@ -374,7 +374,7 @@ async function invokeDahmerMovies(title, year, season = null, episode = null) {
         console.log('[DahmerMovies] No matching content found');
         return [];
     }
-
+    // If 2160p found, fetch first 5 links
     const pathsToProcess = filteredPaths.slice(0, 5);
     const results = [];
 
