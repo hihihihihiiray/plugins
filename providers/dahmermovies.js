@@ -360,7 +360,7 @@ async function invokeDahmerMovies(title, year, season = null, episode = null) {
         console.log('[DahmerMovies] No matching content found');
         return [];
     }
-    const pathsToProcess = filteredPaths.slice(0, 10); 
+    const pathsToProcess = filteredPaths.slice(0, 5); 
     const results = [];
 
     try {
