@@ -1,4 +1,4 @@
-// DahmerMovies Scraper for Nuvio Local Scrapers
+// Dahmer Movies Scraper for Nuvio Local Scrapers
 // React Native compatible version
 
 console.log('[DahmerMovies] Initializing Dahmer Movies scraper');
@@ -345,17 +345,14 @@ async function invokeDahmerMovies(title, year, season = null, episode = null) {
         if (filteredPaths.length > 0) {
             console.log(`[DahmerMovies] Found ${filteredPaths.length} 2160p links, prioritizing those`);
         } else {
-            // No 2160p found — fall back to 1080p only, take first 5
-            filteredPaths = paths.filter(path => /1080p/i.test(path.text)).slice(0, 5);
+            // No 2160p found — fall back to 1080p only, take first 5 links
+            filteredPaths = paths.filter(path => /1080p/i.test(path.text)).slice(0, 6);
             console.log(`[DahmerMovies] No 2160p found, falling back to first ${filteredPaths.length} 1080p links`);
         }
     } else {
         const [seasonSlug, episodeSlug] = getEpisodeSlug(season, episode);
         
-        // Build multiple patterns to match different episode naming formats:
-        // - S01E03 (standard)
-        // - 1x03 (alternate)
-        // - E03 or Episode 03 (plain episode number)
+        // Build multiple patterns to match different episode naming formats
         const patterns = [
             new RegExp(`S${seasonSlug}E${episodeSlug}`, 'i'),           // S01E03
             new RegExp(`${parseInt(season)}x${episodeSlug}`, 'i'),      // 1x03
@@ -375,7 +372,7 @@ async function invokeDahmerMovies(title, year, season = null, episode = null) {
         return [];
     }
 
-    const pathsToProcess = filteredPaths.slice(0, 5);
+    const pathsToProcess = filteredPaths.slice(0, 6);
     const results = [];
 
     try {
