@@ -353,6 +353,7 @@ async function invokeDahmerMovies(title, year, season = null, episode = null) {
         const [seasonSlug, episodeSlug] = getEpisodeSlug(season, episode);
         
         // Build multiple patterns to match different episode naming formats:
+        const patterns = [
             new RegExp(`S${seasonSlug}E${episodeSlug}`, 'i'),           // S01E03
             new RegExp(`${parseInt(season)}x${episodeSlug}`, 'i'),      // 1x03
             new RegExp(`E${episodeSlug}(?!\\d)`, 'i'),                  // E03 (not followed by more digits)
