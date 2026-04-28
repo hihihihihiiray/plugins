@@ -1,6 +1,6 @@
 {
   "name": "Best Plugins",
-  "version": "1.0.0",
+  "version": "1.0",
   "scrapers": [
     { 
       "id": "nuvio-showbox",
@@ -65,9 +65,9 @@
       ]
     },
     {
-      "id": "nuvio-111",
-      "name": "111Movies",
-      "description": "111Movies streaming service. Formerly Dahmer Movies streaming service. Can be slow to fetch and stream, only use if needed. (~17s)",
+      "id": "nuvio-dahmermovies",
+      "name": "DahmerMovies",
+      "description": "DahmerMovies streaming service. Can be slow to fetch and stream, only use if needed. (~17s)",
       "version": "1.4",
       "author": "Nuvio Team",
       "supportedTypes": [
@@ -80,7 +80,7 @@
         "mkv",
         "m3u8"
       ],
-      "logo": "https://ruayamo.s-ul.eu/NSaC8KKw",
+      "logo": "https://image.similarpng.com/file/similarpng/very-thumbnail/2021/05/Letter-D-logo-design-template-with-geometric-shape-style-on-transparent-background-PNG.png",
       "contentLanguage": [
         "en"
       ]
