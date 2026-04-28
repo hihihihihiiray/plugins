@@ -218,6 +218,26 @@
       ]
     },
     {
+      "id": "nuvio-1movies",
+      "name": "1Movies",
+      "description": "1Movies streaming with auto quality selection",
+      "version": "1.0",
+      "author": "raymondnoodles",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/1movies.js",
+      "enabled": true,
+      "formats": [
+        "m3u8"
+      ],
+      "logo": "https://static.1moviesz.to/favicon.ico",
+      "contentLanguage": [
+        "en"
+      ]
+    },
+    {
       "id": "nuvio-animekai",
       "name": "AnimeKai",
       "description": "AnimeKai streaming with fast load times, up to 1080p playback, and multi-server support (~3s)",
