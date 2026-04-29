@@ -507,6 +507,24 @@ function extractDriveseedPage(url) {
       });
 
       return Promise.all(promises).then(function () {
+        // Sort by quality (highest first)
+        var qualityOrder = {
+          '2160p': 4,
+          '4K': 4,
+          '1440p': 3,
+          '1080p': 2,
+          '720p': 1,
+          '480p': 0,
+          '360p': -1,
+          'Unknown': -2
+        };
+        
+        streams.sort(function (a, b) {
+          var qualityA = qualityOrder[a.quality] !== undefined ? qualityOrder[a.quality] : -10;
+          var qualityB = qualityOrder[b.quality] !== undefined ? qualityOrder[b.quality] : -10;
+          return qualityB - qualityA;
+        });
+        
         return streams;
       });
     })
