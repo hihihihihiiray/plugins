@@ -301,11 +301,15 @@ function resolvePath(path, encodedUrl) {
 async function invokeDahmerMovies(title, year, season = null, episode = null) {
     console.log(`[DahmerMovies] Searching for: ${title} (${year})${season ? ` Season ${season}` : ''}${episode ? ` Episode ${episode}` : ''}`);
 
-    // Try "Title (Year)" first, fall back to just "Title" if nothing found
-    const titleVariations = [
+    
+    const titleVariations = season === null
+    ? [
         title.replace(/:/g, '') + ' (' + year + ')',
         title.replace(/:/g, '')
-    ];
+      ]
+    : [
+        title.replace(/:/g, '')
+      ];
 
     let html = null;
     let encodedUrl = null;
@@ -313,8 +317,8 @@ async function invokeDahmerMovies(title, year, season = null, episode = null) {
     for (const variant of titleVariations) {
         const safeVariant = variant.replace(/ /g, '%20').replace(/\(/g, '%28').replace(/\)/g, '%29');
         const tryUrl = season === null
-            ? `${DAHMER_MOVIES_API}/movies/${safeVariant}/`
-            : `${DAHMER_MOVIES_API}/tvs/${safeVariant}/${season < 10 ? 'Season%200' + season : 'Season%20' + season}/`;
+    ? `${DAHMER_MOVIES_API}/movies/${safeVariant}/`
+    : `${DAHMER_MOVIES_API}/tvs/${safeVariant}/Season%20${season}/`;
 
         try {
             const res = await makeRequest(tryUrl);
