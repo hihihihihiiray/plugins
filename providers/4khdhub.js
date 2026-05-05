@@ -248,11 +248,10 @@ function resolveRedirectUrl(redirectUrl) {
     const redirectHtml = yield fetchText(redirectUrl);
     if (!redirectHtml) {
       console.log("[4KHDHub] Failed to fetch redirect HTML");
-      return redirectUrl; // Return the original URL as fallback
+      return redirectUrl; 
     }
     
     try {
-      // Try multiple patterns for extracting the encoded data
       const patterns = [
         /'o','(.*?)'/,
         /['"]o['"],\s*['"]([^'"]+)['"]/,
@@ -272,7 +271,6 @@ function resolveRedirectUrl(redirectUrl) {
       
       if (!redirectDataMatch || !redirectDataMatch[1]) {
         console.log("[4KHDHub] No redirect data pattern matched, trying direct URL extraction");
-        // Try to find any redirect URL in script tags
         const scriptMatch = redirectHtml.match(/window\.location\.href\s*=\s*['"]([^'"]+)['"]/);
         if (scriptMatch && scriptMatch[1]) {
           return scriptMatch[1];
@@ -325,7 +323,6 @@ function extractSourceResults($, el) {
     
     console.log(`[4KHDHub] Extracting from element with meta: ${JSON.stringify(meta)}`);
     
-    // Try to find HubCloud link
     let hubCloudLink = $(el).find("a").filter((_, a) => {
       const text = $(a).text();
       return text.includes("HubCloud") || text.includes("hubcloud");
@@ -339,7 +336,6 @@ function extractSourceResults($, el) {
       }
     }
     
-    // Try to find HubDrive link
     let hubDriveLink = $(el).find("a").filter((_, a) => {
       const text = $(a).text();
       return text.includes("HubDrive") || text.includes("hubdrive");
@@ -373,7 +369,6 @@ function extractSourceResults($, el) {
       }
     }
     
-    // Fallback: try any link with common hosting services
     const fallbackLink = $(el).find("a[href]").filter((_, a) => {
       const href = $(a).attr("href");
       return href && (href.includes("hubcloud") || href.includes("hubdrive") || href.includes("pixeldrain"));
@@ -403,7 +398,6 @@ function extractHubCloud(hubCloudUrl, baseMeta) {
       return [];
     }
     
-    // Try multiple patterns for finding the URL
     const urlPatterns = [
       /var\s+url\s*=\s*'([^']+)'/,
       /var\s+url\s*=\s*"([^"]+)"/,
@@ -446,35 +440,28 @@ function extractHubCloud(hubCloudUrl, baseMeta) {
     
     console.log(`[4KHDHub] HubCloud meta: ${JSON.stringify(currentMeta)}`);
     
-    // Find all download links
     $("a").each((_, el) => {
       const text = $(el).text().trim();
       const href = $(el).attr("href");
       
       if (!href) return;
       
-      // FSL links
       if (text.includes("FSL") || text.includes("Download File") || text.toLowerCase().includes("download")) {
-        console.log(`[4KHDHub] Found FSL link: ${text}`);
         results.push({
           source: "FSL",
           url: href,
           meta: currentMeta
         });
       }
-      // PixelServer links
       else if (text.includes("PixelServer") || text.toLowerCase().includes("pixeldrain") || href.includes("pixeldrain")) {
         const pixelUrl = href.replace("/u/", "/api/file/");
-        console.log(`[4KHDHub] Found PixelServer link: ${text}`);
         results.push({
           source: "PixelServer",
           url: pixelUrl,
           meta: currentMeta
         });
       }
-      // Direct links
       else if (href.includes("http") && (text.toLowerCase().includes("link") || text.toLowerCase().includes("download") || href.includes("cdn") || href.includes("stream"))) {
-        console.log(`[4KHDHub] Found direct link: ${text}`);
         results.push({
           source: "Direct",
           url: href,
@@ -483,7 +470,6 @@ function extractHubCloud(hubCloudUrl, baseMeta) {
       }
     });
     
-    console.log(`[4KHDHub] Extracted ${results.length} links from HubCloud`);
     return results;
   });
 }
@@ -526,8 +512,10 @@ function getStreams(tmdbId, type, season, episode) {
         const seasonStr = "S" + String(season).padStart(2, "0");
         const episodePadded = String(episode).padStart(2, "0");
         const episodeCode = `S${seasonStr.slice(1)}E${episodePadded}`;
-        const seasonPattern = new RegExp(`\bS0?${season}\b`, "i");
-        const episodePattern = new RegExp(`(?:${episodeCode}|Episode[-_ ]?${episodePadded}|\bE${episodePadded}\b)`, "i");
+        
+        // Fixed regex backslashes: \\b instead of \b
+        const seasonPattern = new RegExp(`\\bS0?${season}\\b`, "i");
+        const episodePattern = new RegExp(`(?:${episodeCode}|Episode[-_ ]?${episodePadded}|\\bE${episodePadded}\\b)`, "i");
         
         console.log(`[4KHDHub] Looking for season ${seasonStr}, episode ${episodePadded}`);
         
@@ -556,8 +544,6 @@ function getStreams(tmdbId, type, season, episode) {
         }
       } else {
         console.log("[4KHDHub] Looking for movie download items");
-        
-        // Try multiple selectors for download items
         $(".download-item, .file-item, .movie-file, [class*='download'], [class*='file']").each((_, el) => {
           const hasLink = $(el).find("a[href]").length > 0;
           if (hasLink) {
@@ -579,21 +565,23 @@ function getStreams(tmdbId, type, season, episode) {
           if (sourceResult && sourceResult.url) {
             console.log(`[4KHDHub] Extracting from: ${sourceResult.url}`);
             const extractedLinks = yield extractHubCloud(sourceResult.url, sourceResult.meta);
+            
+            
             return extractedLinks.map((link) => {
-  const quality = sourceResult.meta.height ? sourceResult.meta.height + "p" : "Unknown";
-  const size = formatBytes(link.meta.bytes || 0);
-
-  return {
-    name: `4KHDHub - ${link.source}${sourceResult.meta.height ? ` ${sourceResult.meta.height}p` : ""}`,
-    title: link.meta.title,
-    url: link.url,
-    quality: sourceResult.meta.height ? `${sourceResult.meta.height}p` : void 0,
-    size: size || undefined,
-    behaviorHints: {
-      bingeGroup: `4khdhub-${link.source}`
-    }
-  };
-});
+              const size = formatBytes(link.meta.bytes || 0);
+              
+              return {
+                name: `4KHDHub - ${link.source}${sourceResult.meta.height ? ` ${sourceResult.meta.height}p` : ""}`,
+                title: link.meta.title,
+                url: link.url,
+                quality: sourceResult.meta.height ? `${sourceResult.meta.height}p` : undefined,
+                size: size || undefined,
+                behaviorHints: {
+                  bingeGroup: `4khdhub-${link.source}`
+                }
+              };
+            });
+          }
           return [];
         } catch (err) {
           console.log(`[4KHDHub] Item processing error: ${err.message}`);
@@ -611,4 +599,5 @@ function getStreams(tmdbId, type, season, episode) {
     }
   });
 }
+
 module.exports = { getStreams };
