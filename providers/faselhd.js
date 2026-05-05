@@ -24,7 +24,7 @@ var __async = (__this, __arguments, generator) => {
 
 // src/faselhd/index.js
 var BACKEND_BASE = "http://145.241.158.129:3112";
-var UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36";
+var undefined;
 var FETCH_TIMEOUT = 3e4;
 function safeFetch(url, options, timeout) {
   var ms = timeout || FETCH_TIMEOUT;
