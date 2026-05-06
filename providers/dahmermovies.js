@@ -61,7 +61,8 @@ function getQualityWithCodecs(str) {
 
     const codecs = [];
     const lowerStr = str.toLowerCase();
-
+    
+    // Video codecs
     if (lowerStr.includes('dv') || lowerStr.includes('dolby vision')) codecs.push('DV');
     if (lowerStr.includes('hdr10+')) codecs.push('HDR10+');
     else if (lowerStr.includes('hdr10') || lowerStr.includes('hdr')) codecs.push('HDR');
@@ -70,6 +71,11 @@ function getQualityWithCodecs(str) {
     if (lowerStr.includes('imax')) codecs.push('IMAX');
     if (lowerStr.includes('web-dl')) codecs.push('WEB-DL');
     if (lowerStr.includes('bluray')) codecs.push('BluRay');
+
+    // Audio codecs
+    if (lowerText.includes('atmos')) codecs.push('Atmos');
+    if (lowerText.includes('truehd') || lowerText.includes('true-hd')) codecs.push('TrueHD');
+    if (lowerText.includes('dts-hd ma') || lowerText.includes('dtshdma') || lowerText.includes('dts-hdhr')) codecs.push('DTS-HD MA');
 
     if (codecs.length > 0) {
         return `${baseQuality} | ${codecs.join(' | ')}`;
