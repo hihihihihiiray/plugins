@@ -191,13 +191,13 @@ function resolvePath(path, encodedUrl) {
 
     fullUrl = decodeURIComponent(fullUrl)
         .replace(/ /g, '%20')
-        .replace(/\(/g, '%26')
-        .replace(/\(/g, '%27')
+        .replace(/&/g, '%26')
+        .replace(/'/g, '%27')
         .replace(/\(/g, '%28')
         .replace(/\)/g, '%29');
 
-    // Attach bulk proxy prefix
-const proxiedUrl = `${DAHMER_WORKER_API}${fullUrl}`;
+    // Attach bulk proxy prefix with proper URL encoding
+    const proxiedUrl = `${DAHMER_WORKER_API}${encodeURIComponent(fullUrl)}`;
 
     // Calculate raw bytes for sorting
     const sizeBytes = (function(s) {
