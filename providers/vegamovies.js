@@ -62,6 +62,28 @@ function getTMDBDetails(tmdbId, mediaType) {
     });
 }
 
+// Get season air year for TV shows
+function getSeasonYear(tmdbId, seasonNum) {
+    const url = `${TMDB_BASE_URL}/tv/${tmdbId}/season/${seasonNum}?api_key=${TMDB_API_KEY}`;
+
+    console.log(`[VegaMovies] Getting season ${seasonNum} air date...`);
+
+    return makeRequest(url).then(function(response) {
+        return response.json();
+    }).then(function(data) {
+        const airDate = data.air_date;
+        if (airDate) {
+            const year = airDate.substring(0, 4);
+            console.log(`[VegaMovies] Season ${seasonNum} aired in ${year}`);
+            return year;
+        }
+        return null;
+    }).catch(function(error) {
+        console.log(`[VegaMovies] Failed to get season air date: ${error.message}`);
+        return null;
+    });
+}
+
 // Search VegaMovies
 function searchVegaMovies(title, year) {
     const query = encodeURIComponent(`${title} ${year}`);
@@ -113,17 +135,17 @@ function extractNexdriveLinks(vegaPageUrl) {
     }).then(function(html) {
         const nexdriveLinks = [];
 
-        
+
         const qualityBlocks = html.split(/<h[1-6]/i);
 
         for (let i = 0; i < qualityBlocks.length; i++) {
             const block = qualityBlocks[i];
 
-            
+
             const quality = extractQuality(block);
             const size = extractFileSize(block);
 
-          
+
             const linkMatch = block.match(/<a[^>]+href="([^"]*(?:nexdrive|genxfm)[^"]*)"[^>]*>/i);
             if (linkMatch) {
                 let link = linkMatch[1];
@@ -146,7 +168,7 @@ function extractVCloudFromNexdrive(nexdriveUrl) {
     return makeRequest(nexdriveUrl).then(function(response) {
         return response.text();
     }).then(function(html) {
-        
+
         const vcloudMatch = html.match(/<a[^>]+href="([^"]*vcloud[^"]*)"[^>]*>[\s\S]*?V-Cloud/i);
         if (!vcloudMatch) {
             throw new Error('V-Cloud link not found on nexdrive page');
@@ -213,7 +235,7 @@ function extractServersFromVCloud(vcloudUrl, quality, size) {
             }
 
 
-          
+
             if (!serverUrl) {
                 const buttonPatterns = [
                     /<a[^>]+class=["'][^"']*btn[^"']*["'][^>]+href=["']([^"']+)["'][^>]*>[^<]*10\s?Gbps/gi,
@@ -265,7 +287,7 @@ function extractServersFromVCloud(vcloudUrl, quality, size) {
                 return finalUrl;
             }).then(function(downloadUrl) {
                 return {
-                    name: `VegaMovies 10Gbps${quality !== 'Unknown' ? ' - ' + quality : ''}`,
+                    name: `VegaMovies G-Drive${quality !== 'Unknown' ? ' - ' + quality : ''}`,
                     title: `${serverInfo.filename}`,
                     url: downloadUrl,
                     quality: quality,
@@ -336,10 +358,20 @@ async function invokeVegaMovies(tmdbId, mediaType, seasonNum = null, episodeNum 
 
         console.log(`[VegaMovies] Title: "${mediaInfo.title}" (${mediaInfo.year})`);
 
-        // Step 2: Search VegaMovies
-        const vegaPageUrl = await searchVegaMovies(mediaInfo.title, mediaInfo.year);
+        // Step 1.5: For TV shows, get the season's air year
+        let searchYear = mediaInfo.year;
+        if (isSeries && seasonNum) {
+            const seasonYear = await getSeasonYear(tmdbId, seasonNum);
+            if (seasonYear) {
+                searchYear = seasonYear;
+                console.log(`[VegaMovies] Using season year ${searchYear} for search`);
+            }
+        }
 
-        // Step 3: Extract nexdrive links (one per quality)
+        // Step 2: Search VegaMovies (with season year for TV shows)
+        const vegaPageUrl = await searchVegaMovies(mediaInfo.title, searchYear);
+
+        // Step 3: Extract links (one per quality)
         const nexdriveLinks = await extractNexdriveLinks(vegaPageUrl);
 
         if (nexdriveLinks.length === 0) {
@@ -383,7 +415,7 @@ async function invokeVegaMovies(tmdbId, mediaType, seasonNum = null, episodeNum 
             selectedLinks.push(fourKLinks[0]);
         }
 
-        
+
         if (qualityGroups['1080p'].length > 0) {
             const best1080p = qualityGroups['1080p'].sort(function(a, b) {
                 return parseSizeToBytes(b.size) - parseSizeToBytes(a.size);
@@ -391,7 +423,7 @@ async function invokeVegaMovies(tmdbId, mediaType, seasonNum = null, episodeNum 
             selectedLinks.push(best1080p);
         }
 
-      
+
         if (qualityGroups['720p'].length > 0) {
             const best720p = qualityGroups['720p'].sort(function(a, b) {
                 return parseSizeToBytes(b.size) - parseSizeToBytes(a.size);
